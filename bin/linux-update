@@ -1,0 +1,42 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+VERSION=$(<"$PROJECT_ROOT/version.txt")
+echo "linux-update $VERSION"
+echo "Detected package manager: $PACKAGE_MANAGER"
+echo "Running system update..."
+
+source "$PROJECT_ROOT/lib/osdetect.sh"
+
+detect_package_manager
+
+echo "Package manager: $PACKAGE_MANAGER"
+
+case "$PACKAGE_MANAGER" in
+    apt)
+        source "$PROJECT_ROOT/lib/apt.sh"
+        update_system
+        ;;
+    pacman)
+        source "$PROJECT_ROOT/lib/pacman.sh"
+        update_system
+        ;;
+    dnf)
+        source "$PROJECT_ROOT/lib/dnf.sh"
+        update_system
+        ;;
+    zypper)
+        source "$PROJECT_ROOT/lib/zypper.sh"
+        update_system
+        ;;
+    apk)
+        source "$PROJECT_ROOT/lib/apk.sh"
+        update_system
+        ;;
+    emerge)
+        source "$PROJECT_ROOT/lib/emerge.sh"
+        update_system
+        ;;
+esac
