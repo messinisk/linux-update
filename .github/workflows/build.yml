@@ -1,0 +1,26 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify structure
+        run: |
+          test -f bin/linux-update
+          test -f version.txt
+
+      - name: Check scripts
+        run: |
+          chmod +x bin/linux-update
+          bash -n bin/linux-update
+          bash -n lib/*.sh
