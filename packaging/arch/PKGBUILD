@@ -1,0 +1,31 @@
+pkgname=linux-update
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Universal Linux Update Utility"
+arch=('any')
+license=('Apache')
+
+package() {
+
+    install -d \
+        "$pkgdir/usr/bin"
+
+    install -d \
+        "$pkgdir/usr/lib/linux-update"
+
+    install -Dm755 \
+        bin/linux-update \
+        "$pkgdir/usr/bin/linux-update"
+
+    install -Dm644 \
+        lib/*.sh \
+        -t "$pkgdir/usr/lib/linux-update"
+
+    install -Dm644 \
+        version.txt \
+        "$pkgdir/usr/lib/linux-update/version.txt"
+
+    install -Dm644 \
+        LICENSE \
+        "$pkgdir/usr/share/licenses/linux-update/LICENSE"
+}

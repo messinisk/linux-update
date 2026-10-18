@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 detect_package_manager() {
 

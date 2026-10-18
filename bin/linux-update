@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
@@ -9,6 +9,7 @@ echo "Detected package manager: $PACKAGE_MANAGER"
 echo "Running system update..."
 
 # shellcheck source=lib/osdetect.sh
+# shellcheck disable=SC1091
 source "$PROJECT_ROOT/lib/osdetect.sh"
 
 detect_package_manager
@@ -18,31 +19,37 @@ echo "Package manager: $PACKAGE_MANAGER"
 case "$PACKAGE_MANAGER" in
 apt)
 	# shellcheck source=lib/apt.sh
+	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/apt.sh"
 	update_system
 	;;
 pacman)
 	# shellcheck source=lib/pacman.sh
+	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/pacman.sh"
 	update_system
 	;;
 dnf)
 	# shellcheck source=lib/dnf.sh
+	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/dnf.sh"
 	update_system
 	;;
 zypper)
 	# shellcheck source=lib/zypper.sh
+	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/zypper.sh"
 	update_system
 	;;
 apk)
 	# shellcheck source=lib/apk.sh
+	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/apk.sh"
 	update_system
 	;;
 emerge)
 	# shellcheck source=lib/emerge.sh
+	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/emerge.sh"
 	update_system
 	;;
