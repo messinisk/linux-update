@@ -2,26 +2,32 @@
 
 detect_package_manager() {
 
-    if command -v apt >/dev/null 2>&1; then
-        PACKAGE_MANAGER="apt"
+	if command -v apt >/dev/null 2>&1; then
+		# shellcheck disable=SC2034
+		PACKAGE_MANAGER="apt"
 
-    elif command -v pacman >/dev/null 2>&1; then
-        PACKAGE_MANAGER="pacman"
+	elif command -v pacman >/dev/null 2>&1; then
+		# shellcheck disable=SC2034
+		PACKAGE_MANAGER="pacman"
 
-    elif command -v dnf >/dev/null 2>&1; then
-        PACKAGE_MANAGER="dnf"
+	elif command -v dnf >/dev/null 2>&1; then
+		# shellcheck disable=SC2034
+		PACKAGE_MANAGER="dnf"
 
-    elif command -v zypper >/dev/null 2>&1; then
-        PACKAGE_MANAGER="zypper"
+	elif command -v zypper >/dev/null 2>&1; then
+		# shellcheck disable=SC2034
+		PACKAGE_MANAGER="zypper"
 
-    elif command -v apk >/dev/null 2>&1; then
-        PACKAGE_MANAGER="apk"
+	elif command -v apk >/dev/null 2>&1; then
+		# shellcheck disable=SC2034
+		PACKAGE_MANAGER="apk"
 
-    elif command -v emerge >/dev/null 2>&1; then
-        PACKAGE_MANAGER="emerge"
+	elif command -v emerge >/dev/null 2>&1; then
+		# shellcheck disable=SC2034
+		PACKAGE_MANAGER="emerge"
 
-    else
-        echo "Unsupported distribution"
-        exit 1
-    fi
+	else
+		echo "Unsupported distribution"
+		exit 1
+	fi
 }

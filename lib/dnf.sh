@@ -1,6 +1,6 @@
 #!/bin/bash
 
-update_system(){
-    sudo dnf update
-    sudo dnf upgrade -y
+update_system() {
+	sudo dnf update
+	sudo dnf upgrade -y
 }

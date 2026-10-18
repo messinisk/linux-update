@@ -1,0 +1,8 @@
+Package: linux-update
+Version: 0.1.0
+Section: admin
+Priority: optional
+Architecture: all
+Maintainer: Konstantinos Messinis
+Description: Universal Linux update utility
+

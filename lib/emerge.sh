@@ -1,5 +1,5 @@
 #!/bin/bash
 
-update_system(){
-    sudo emerge --sync
+update_system() {
+	sudo emerge --sync
 }
