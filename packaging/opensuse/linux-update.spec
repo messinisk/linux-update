@@ -3,7 +3,7 @@ Version:        0.1.0
 Release:        1%{?dist}
 Summary:        Universal Linux Update Utility
 
-License:        Apache
+License:        Apache 2
 BuildArch:      noarch
 
 Source0:        %{name}-%{version}.tar.gz

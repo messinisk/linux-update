@@ -1,31 +1,21 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2034
 pkgname=linux-update
 pkgver=0.1.0
 pkgrel=1
-pkgdesc="Universal Linux Update Utility"
+pkgdesc="Universal Linux update utility"
 arch=('any')
-license=('Apache')
+license=('Apache 2')
+
 
 package() {
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/lib/"
 
-    install -d \
-        "$pkgdir/usr/bin"
+    install -m755 "$PWD/../../bin/linux-update" \
+        "$pkgdir/usr/bin/"
 
-    install -d \
-        "$pkgdir/usr/lib/linux-update"
-
-    install -Dm755 \
-        bin/linux-update \
-        "$pkgdir/usr/bin/linux-update"
-
-    install -Dm644 \
-        lib/*.sh \
-        -t "$pkgdir/usr/lib/linux-update"
-
-    install -Dm644 \
-        version.txt \
-        "$pkgdir/usr/lib/linux-update/version.txt"
-
-    install -Dm644 \
-        LICENSE \
-        "$pkgdir/usr/share/licenses/linux-update/LICENSE"
+    install -m644 "$PWD/../../lib/"*.sh \
+        "$pkgdir/usr/lib/"
 }
