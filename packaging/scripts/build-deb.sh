@@ -10,12 +10,14 @@ rm -rf "$BUILD_DIR"
 
 mkdir -p "$BUILD_DIR/DEBIAN"
 mkdir -p "$BUILD_DIR/usr/bin"
-mkdir -p "$BUILD_DIR/usr/lib/linux-update"
+mkdir -p "$BUILD_DIR/usr/lib/"
 cp packaging/debian/control  "$BUILD_DIR/DEBIAN/control"
 cp bin/linux-update "$BUILD_DIR/usr/bin/"
-cp lib/*.sh   "$BUILD_DIR/usr/lib/linux-update/"
-cp version.txt "$BUILD_DIR/usr/lib/linux-update/"
+cp lib/*.sh   "$BUILD_DIR/usr/lib/"
+cp version.txt "$BUILD_DIR/usr/"
 dpkg-deb --build "$BUILD_DIR"
 mkdir -p packaging/debian/dist
-cp build/*.deb  packaging/dist
+TARGET_DIR="/mnt/c/Windows/Temp"
+cp build/*.deb  "$TARGET_DIR/"
+echo "$TARGET_DIR/"
 rm -rf build
