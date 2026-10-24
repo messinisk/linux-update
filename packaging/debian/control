@@ -1,8 +1,14 @@
 Package: linux-update
-Version: 0.1.0
+Version: 0.2.0
 Section: admin
 Priority: optional
 Architecture: all
 Maintainer: Konstantinos Messinis
-Description: Universal Linux update utility
-
+Homepage: https://github.com/messinisk/linux-update
+Vcs-Git: https://github.com/messinisk/linux-update.git
+Depends: bash
+Description: Universal Linux update tool
+ Cross-distribution update utility supporting apt,
+ dnf and zypper package managers.
+ Designed for Debian, Ubuntu, Fedora,
+ Rocky Linux, AlmaLinux and openSUSE.

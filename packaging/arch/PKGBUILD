@@ -10,6 +10,7 @@ license=('Apache 2')
 
 
 package() {
+    # shellcheck disable=SC2154
     install -d "$pkgdir/usr/bin"
     install -d "$pkgdir/usr/lib/"
 

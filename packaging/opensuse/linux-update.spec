@@ -1,19 +1,20 @@
 Name:           linux-update
 Version:        0.1.0
 Release:        1%{?dist}
-Summary:        Universal Linux Update Utility
+Summary:        Universal Linux update tool
 
 License:        Apache 2
-BuildArch:      noarch
-
+URL:            https://github.com/messinisk/linux-update
 Source0:        %{name}-%{version}.tar.gz
 
-Requires:       bash
+BuildArch:      noarch
+
+Packager:       Konstantinos Messinis
+Vendor:         Konstantinos Messinis
 
 %description
-linux-update is a Bash CLI utility that detects the system
-package manager and performs update operations on supported
-Linux distributions.
+Cross-distribution update utility supporting
+apt, dnf and zypper.
 
 %prep
 %setup -q
@@ -44,5 +45,5 @@ install -m 644 version.txt \
 
 %changelog
 
-* Sat Oct 17 2026 Konstantinos Messinis <you@example.com> - 0.1.0-1
+* Sat Oct 17 2026 Konstantinos Messinis <you@example.com> - 0.1.0
 - Initial RPM package

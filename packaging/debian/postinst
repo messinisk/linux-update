@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+chmod 755 /usr/bin/linux-update
+
+echo "linux-update installed successfully"
+
+exit 0
