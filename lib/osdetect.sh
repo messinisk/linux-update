@@ -15,9 +15,6 @@ detect_package_manager() {
 		# shellcheck disable=SC2034
 		PACKAGE_MANAGER="zypper"
 
-	elif command -v emerge >/dev/null 2>&1; then
-		# shellcheck disable=SC2034
-		PACKAGE_MANAGER="emerge"
 
 	else
 		echo "Unsupported distribution"

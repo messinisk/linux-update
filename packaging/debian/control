@@ -10,5 +10,7 @@ Depends: bash
 Description: Universal Linux update tool
  Cross-distribution update utility supporting apt,
  dnf and zypper package managers.
- Designed for Debian, Ubuntu, Fedora,
- Rocky Linux, AlmaLinux and openSUSE.
+ Designed for Ubuntu, kali-linux
+ Debian, eLxr , openSUSE, fendora,
+ Oracle Linux , AlmaLinux ,Rocky Linux Plus 9.
+

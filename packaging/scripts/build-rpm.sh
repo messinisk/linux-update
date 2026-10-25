@@ -55,4 +55,4 @@ find "$RPM_ROOT/RPMS" -name "*.rpm" -exec cp {} "$TARGET_DIR/" \;
 echo
 echo "RPM packages created successfully:"
 ls -l "$TARGET_DIR"/*.rpm
-#rm -rf build
+rm -rf build

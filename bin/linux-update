@@ -33,9 +33,4 @@ zypper)
 	source "$PROJECT_ROOT/lib/zypper.sh"
 	update_system
 	;;
-emerge)
-	# shellcheck disable=SC1091
-	source "$PROJECT_ROOT/lib/emerge.sh"
-	update_system
-	;;
 esac

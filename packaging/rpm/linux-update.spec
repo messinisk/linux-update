@@ -19,6 +19,9 @@ Group:          System/Base
 %description
 Cross-distribution update utility supporting
 apt, dnf and zypper.
+Designed for Ubuntu, kali-linux
+Debian, eLxr , openSUSE, fendora,
+Oracle Linux , AlmaLinux ,Rocky Linux Plus 9.
 
 %prep
 %setup -q
