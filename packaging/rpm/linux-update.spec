@@ -1,5 +1,5 @@
 Name:           linux-update
-Version:        0.1.0
+Version:        0.3.0
 Release:        1%{?dist}
 Summary:        Universal Linux update tool
 
@@ -12,6 +12,10 @@ BuildArch:      noarch
 Packager:       Konstantinos Messinis
 Vendor:         Konstantinos Messinis
 
+Provides:       linux-update
+
+Group:          System/Base
+
 %description
 Cross-distribution update utility supporting
 apt, dnf and zypper.
@@ -23,30 +27,30 @@ apt, dnf and zypper.
 # Nothing to build
 
 %install
-# 1. Δημιουργία των απαραίτητων καταλογών στο buildroot
+
 mkdir -p %{buildroot}/usr/bin
-mkdir -p %{buildroot}/usr/lib
+mkdir -p %{buildroot}/usr/lib/linux-update
 
-# 2. Εγκατάσταση του εκτελέσιμου αρχείου
 install -m 755 bin/linux-update \
-    %{buildroot}/usr/bin/
+    %{buildroot}/usr/bin/linux-update
 
-# 3. Εγκατάσταση των βιβλιοθηκών .sh στον δικό τους υποφάκελο
 install -m 644 lib/*.sh \
-    %{buildroot}/usr/lib/
+    %{buildroot}/usr/lib/linux-update/
 
-# 4. Εγκατάσταση του version.txt απευθείας στο /usr/
 install -m 644 version.txt \
-    %{buildroot}/usr/version.txt
+    %{buildroot}/usr/lib/linux-update/
 
 %files
+
 %license LICENSE
 
-# Στοχευμένη δήλωση αρχείων και φακέλων (Ασφαλές για το σύστημα)
+%doc README.md
+%doc CHANGELOG.md
+
 /usr/bin/linux-update
-/usr/lib/*.sh
-/usr/version.txt
+/usr/lib/linux-update
 
 %changelog
-* Sat Oct 17 2026 Konstantinos Messinis <messiniskostas0@gmail.com> - 0.1.0
+
+* Sat Oct 17 2026 Konstantinos Messinis <messiniskostas0@gmail.com> - 0.2.0
 - Initial RPM package

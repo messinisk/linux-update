@@ -21,20 +21,20 @@ rpm)
 	;;
 
 arch)
-	bash packaging/scripts/build-arch.sh
+	#bash packaging/scripts/build-arch.sh
 	;;
 
 all)
 	bash packaging/scripts/build-deb.sh
 	bash packaging/scripts/build-rpm.sh
-	bash packaging/scripts/build-arch.sh
+	# bash packaging/scripts/build-arch.sh
 	;;
  *)
         echo "Usage:"
         echo "  ./pack.sh check"
         echo "  ./pack.sh deb"
         echo "  ./pack.sh rpm"
-        echo "  ./pack.sh arch"
+        # echo "  ./pack.sh arch"
         echo "  ./pack.sh all"
         exit 1
         ;;

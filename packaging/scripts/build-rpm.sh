@@ -16,12 +16,10 @@ VERSION=$(<version.txt)
 echo "Building RPM package version: $VERSION"
 
 RPM_ROOT="build/rpm"
-DIST_DIR="packaging/dist"
 
 # Καθαρισμός και δημιουργία δομής RPM
 rm -rf "$RPM_ROOT"
 mkdir -p "$RPM_ROOT"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-mkdir -p "$DIST_DIR"
 
 # Δημιουργία προσωρινού φακέλου για το tarball
 TMP_DIR=$(mktemp -d)
@@ -57,4 +55,4 @@ find "$RPM_ROOT/RPMS" -name "*.rpm" -exec cp {} "$TARGET_DIR/" \;
 echo
 echo "RPM packages created successfully:"
 ls -l "$TARGET_DIR"/*.rpm
-rm -rf build
+#rm -rf build

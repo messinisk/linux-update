@@ -16,15 +16,11 @@ detect_package_manager
 
 echo "Package manager: $PACKAGE_MANAGER"
 
+#  out manager pacman & apk
 case "$PACKAGE_MANAGER" in
 apt)
 	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/apt.sh"
-	update_system
-	;;
-pacman)
-	# shellcheck disable=SC1091
-	source "$PROJECT_ROOT/lib/pacman.sh"
 	update_system
 	;;
 dnf)
@@ -35,11 +31,6 @@ dnf)
 zypper)
 	# shellcheck disable=SC1091
 	source "$PROJECT_ROOT/lib/zypper.sh"
-	update_system
-	;;
-apk)
-	# shellcheck disable=SC1091
-	source "$PROJECT_ROOT/lib/apk.sh"
 	update_system
 	;;
 emerge)
