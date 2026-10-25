@@ -6,9 +6,6 @@ detect_package_manager() {
 		# shellcheck disable=SC2034
 		PACKAGE_MANAGER="apt"
 
-	elif command -v pacman >/dev/null 2>&1; then
-		# shellcheck disable=SC2034
-		PACKAGE_MANAGER="pacman"
 
 	elif command -v dnf >/dev/null 2>&1; then
 		# shellcheck disable=SC2034
@@ -17,10 +14,6 @@ detect_package_manager() {
 	elif command -v zypper >/dev/null 2>&1; then
 		# shellcheck disable=SC2034
 		PACKAGE_MANAGER="zypper"
-
-	elif command -v apk >/dev/null 2>&1; then
-		# shellcheck disable=SC2034
-		PACKAGE_MANAGER="apk"
 
 	elif command -v emerge >/dev/null 2>&1; then
 		# shellcheck disable=SC2034
