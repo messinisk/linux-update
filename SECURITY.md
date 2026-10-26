@@ -1,11 +1,28 @@
 # Security Policy
 
-<p>
-Supported Versions
-</p
+## Supported Versions
 
-<p>Version	Supported</p>
-<p><b>0.1.x</b>	<b>Yes</b></p>
-<p>Reporting a Vulnerability</p>
+| Version | Supported |
+|----------|----------|
+| 0.3.x | Yes |
+| 0.2.x | No |
+| 0.1.x | No |
 
-<p>Open a private security report through GitHub Security Advisories.</p>
+## Reporting a Vulnerability
+
+Please do not open a public issue.
+
+Report vulnerabilities through:
+
+- GitHub Security Advisories
+- GitHub Issues (private disclosure request)
+
+## Package Verification
+
+Official releases provide:
+
+- SHA256SUMS
+- SHA256SUMS.asc
+- public.key
+
+Always verify downloaded packages before installation.
