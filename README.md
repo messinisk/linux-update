@@ -20,7 +20,7 @@
 
 
 ## Last version:
-    linux-update 0.3.0
+    linux-update 0.4.0
 
 
 ## Verify Downloads
@@ -37,16 +37,16 @@
 
 ### Os system : fendora, Oracle Linux,AlmaLinux 9, Rocky Linux Plus 9
 ### write terminal
-    sudo dnf install ./linux-update-0.3.0-1.noarch.rpm
+    sudo dnf install ./linux-update-0.4.0-1.noarch.rpm
 
 ### Os system : openSUSE
 ### write terminal
-    sudo zypper install ./linux-update-0.3.0-1.noarch.rpm
+    sudo zypper install ./linux-update-0.4.0-1.noarch.rpm
 
 
 ## Project Status
 
-Current Release: v0.3.0
+Current Release: v0.4.0
 
 Implemented:
 

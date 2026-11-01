@@ -1,10 +1,17 @@
 Name:           linux-update
-Version:        0.3.0
+Version:        0.4.0
 Release:        1%{?dist}
 Summary:        Universal Linux update tool
 
 License:        Apache 2
 URL:            https://github.com/messinisk/linux-update
+
+Requires:       bash
+Requires:       curl
+Requires:       gnupg2
+Requires:       wget
+
+
 Source0:        %{name}-%{version}.tar.gz
 
 BuildArch:      noarch

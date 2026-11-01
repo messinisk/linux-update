@@ -13,6 +13,7 @@ cd "$REPO_ROOT"
 # Ανάγνωση της έκδοσης
 VERSION=$(<version.txt)
 
+
 echo "Building RPM package version: $VERSION"
 
 RPM_ROOT="build/rpm"
@@ -20,6 +21,12 @@ RPM_ROOT="build/rpm"
 # Καθαρισμός και δημιουργία δομής RPM
 rm -rf "$RPM_ROOT"
 mkdir -p "$RPM_ROOT"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+
+sed \
+    "s/@VERSION@/$VERSION/g" \
+    packaging/rpm/linux-update.spec \
+    > build/rpm/SPECS/linux-update.spec
+
 
 # Δημιουργία προσωρινού φακέλου για το tarball
 TMP_DIR=$(mktemp -d)
@@ -47,7 +54,7 @@ rpmbuild \
     -ba \
     "$RPM_ROOT/SPECS/linux-update.spec"
 
-TARGET_DIR="/mnt/c/Windows/Temp"
+TARGET_DIR="/mnt/c/Windows/Temp/v$VERSION/"
 
 # Αντιγραφή των τελικών RPM αρχείων στο Windows Temp
 find "$RPM_ROOT/RPMS" -name "*.rpm" -exec cp {} "$TARGET_DIR/" \;
