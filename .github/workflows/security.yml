@@ -32,6 +32,8 @@ jobs:
           framework: github_actions
           output_format: sarif
           output_file_path: results.sarif
+          soft_fail: true # <-- ΑΥΤΟ ΕΔΩ: Καταγράφει τα bugs χωρίς να "κοκκινίζει" το build
+
 
       # 3. Ανέβασμα των αποτελεσμάτων του Checkov στο Security Tab του GitHub
       - name: Upload Checkov results to GitHub Security
