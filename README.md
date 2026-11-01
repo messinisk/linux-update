@@ -1,60 +1,175 @@
 # linux-update
 
+Universal Linux update utility for multiple Linux distributions.
+
+---
 
 ## Supported Distributions
 
 | Distribution Family | Package Manager |
 |---------------------|-----------------|
-| Debian              | apt             |
-| Ubuntu              | apt             |
-| Kali Linux          | apt             |
-| eLxr                | apt             |
-| Fedora              | dnf             |
-| AlmaLinux           | dnf             |
-| Oracle Linux        | dnf             |
-| Rocky Linux         | dnf             |
-| openSUSE            | zypper          |
+| Debian              | apt |
+| Ubuntu              | apt |
+| Kali Linux          | apt |
+| eLxr                | apt |
+| Fedora              | dnf |
+| AlmaLinux           | dnf |
+| Oracle Linux        | dnf |
+| Rocky Linux         | dnf |
+| openSUSE            | zypper |
 
+---
 
+## Current Version
 
+```text
+linux-update 0.4.2
+```
 
+---
 
-## Last version:
-    linux-update 0.4.0
+## Package Formats
 
+Official release formats:
 
-## Verify Downloads
-- [Go releases v0.3.0](https://github.com/messinisk/linux-update/releases/tag/v0.3.0)
-    - [Downlond rpm v0.3.0](https://github.com/messinisk/linux-update/releases/download/v0.3.0/linux-update-0.3.0-1.noarch.rpm)
-    - [Downlond deb v0.3.0](https://github.com/messinisk/linux-update/releases/download/v0.3.0/linux-update_0.3.0.deb)
+- DEB
+- RPM
+- AppImage
 
+---
 
-## install 
+## Downloads
 
-### Os system : Ubuntu-26.04, kali-linux, Debian, eLxr
-### write terminal
-    sudo apt install ./linux-update_0.3.0_all.deb
+Latest releases:
 
-### Os system : fendora, Oracle Linux,AlmaLinux 9, Rocky Linux Plus 9
-### write terminal
-    sudo dnf install ./linux-update-0.4.0-1.noarch.rpm
+https://github.com/messinisk/linux-update/releases
 
-### Os system : openSUSE
-### write terminal
-    sudo zypper install ./linux-update-0.4.0-1.noarch.rpm
+---
 
+## Installation
+
+### Debian, Ubuntu, Kali Linux, eLxr
+
+```bash
+sudo apt install ./linux-update_0.4.2.deb
+```
+
+### Fedora, AlmaLinux, Oracle Linux, Rocky Linux
+
+```bash
+sudo dnf install ./linux-update-0.4.2-1.noarch.rpm
+```
+
+### openSUSE
+
+```bash
+sudo zypper install ./linux-update-0.4.2-1.noarch.rpm
+```
+
+### AppImage
+
+```bash
+chmod +x linux-update-0.4.2-x86_64.AppImage
+
+./linux-update-0.4.2-x86_64.AppImage
+```
+
+---
+
+## Release Verification
+
+Import the public key:
+
+```bash
+gpg --import public.key
+```
+
+Verify release metadata:
+
+```bash
+gpg --verify SHA256SUMS.asc SHA256SUMS
+```
+
+Verify file integrity:
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+---
+
+## DEB Verification
+
+```bash
+gpg --verify \
+linux-update_0.4.2.deb.sig \
+linux-update_0.4.2.deb
+```
+
+---
+
+## AppImage Verification
+
+```bash
+gpg --verify \
+linux-update-0.4.2-x86_64.AppImage.sig \
+linux-update-0.4.2-x86_64.AppImage
+```
+
+---
+
+## RPM Verification
+
+```bash
+rpm -Kv \
+linux-update-0.4.2-1.noarch.rpm
+```
+
+---
+
+## Usage
+
+Run system updates:
+
+```bash
+linux-update
+```
+
+Check for a newer release:
+
+```bash
+linux-update self-update
+```
+
+---
 
 ## Project Status
 
-Current Release: v0.4.0
+Current Release:
+
+```text
+v0.4.2 (Pre-release)
+```
 
 Implemented:
 
-- DEB packages
-- RPM packages
-- Source RPM
-- Package metadata
-- Package integrity verification
+- apt support
+- dnf support
+- zypper support
+- DEB packaging
+- RPM packaging
+- AppImage packaging
+- SHA256SUMS generation
+- OpenPGP release signing
+- RPM package signing
+- DEB detached signatures
+- AppImage detached signatures
+- Self-update prototype
 
-##  Run System :
-    linux-update
+---
+
+## License
+
+Apache License 2.0
+
+Copyright 2026 Konstantinos Messinis
