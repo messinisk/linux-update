@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     branches: [ "main" ]
-
   pull_request:
     branches: [ "main" ]
 
@@ -16,14 +15,25 @@ jobs:
 
       - name: Verify structure
         run: |
+          # Έλεγχος συγκεκριμένων αρχείων
           test -f src/linux-update
-          test -f packaging/scripts/*.sh
-          test -f release/*.sh
-          test -f src/system/*.sh
           test -f version.txt
+          
+          # Έλεγχος αν υπάρχουν αρχεία .sh στους καταλόγους (loop)
+          for file in packaging/scripts/*.sh release/*.sh src/system/*.sh; do
+            if [ ! -f "$file" ]; then
+              echo "Error: $file does not exist or is not a regular file."
+              exit 1
+            fi
+          done
 
       - name: Check scripts
         run: |
           chmod +x src/linux-update
           bash -n src/linux-update
-          bash -n src/system/*.sh
+          
+          # Έλεγχος σύνταξης για κάθε script ξεχωριστά
+          for file in src/system/*.sh packaging/scripts/*.sh release/*.sh; do
+            echo "Checking syntax for: $file"
+            bash -n "$file"
+          done

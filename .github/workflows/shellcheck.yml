@@ -18,8 +18,9 @@ jobs:
 
       - name: Run ShellCheck
         run: |
-          shellcheck src/linux-update
-          shellcheck packaging/scripts/*.sh
-          shellcheck src/system/*.sh
-          shellcheck release/*.sh
-          shellcheck version.txt
+          # Έλεγχος του κεντρικού script
+          shellcheck -x src/linux-update
+          
+          # Αυτόματη εύρεση και έλεγχος όλων των .sh αρχείων 
+          # στους φακέλους packaging, src και release
+          find packaging src release -type f -name "*.sh" -exec shellcheck -x {} +
