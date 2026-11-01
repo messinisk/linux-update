@@ -35,7 +35,18 @@ trap cleanup EXIT
 # Read current version
 ###############################################################################
 
-CURRENT_VERSION=$(< /usr/lib/linux-update/version.txt)
+###############################################################################
+# Read current version (Dynamic detection for System or AppImage)
+###############################################################################
+
+if [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
+    # Αν τρέχει μέσα από το AppImage
+    CURRENT_VERSION=$(< "$APPDIR/usr/lib/linux-update/version.txt")
+else
+    # Αν τρέχει ως κανονική εγκατάσταση στο σύστημα
+    CURRENT_VERSION=$(< /usr/lib/linux-update/version.txt)
+fi
+
 
 echo "Current version: $CURRENT_VERSION"
 
@@ -136,14 +147,16 @@ curl -fsSL \
 ###############################################################################
 # Verify checksum
 ###############################################################################
-
 (
     cd "$TMPDIR"
 
-    sha256sum -c SHA256SUMS
+    # Χρησιμοποιούμε το $PACKAGE που περιέχει ήδη το σωστό όνομα αρχείου 
+    # (.deb ή .rpm) ανάλογα με τη διανομή του χρήστη.
+    grep "$PACKAGE" SHA256SUMS | sha256sum -c -
 )
 
 echo "Checksum OK"
+
 
 ###############################################################################
 # Rollback helpers

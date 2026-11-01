@@ -71,10 +71,13 @@ sed \
 ###############################################################################
 # Main executable
 ###############################################################################
+cp src/linux-update "$BUILD_DIR/usr/bin/linux-update"
+chmod 755  "$BUILD_DIR//usr/bin/linux-update"
 
 cp src/system/*.sh \
    "$BUILD_DIR/usr/lib/linux-update/"
 
+chmod 755 "$BUILD_DIR/usr/lib/linux-update/"
 
 ###############################################################################
 # Library scripts

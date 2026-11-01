@@ -95,4 +95,4 @@ echo
 echo "Created:"
 echo "$TARGET_DIR/linux-update-${VERSION}-x86_64.AppImage"
 
-# rm -rf build
+rm -rf build

@@ -25,36 +25,41 @@
 ###############################################################################
 # Runtime path detection
 ###############################################################################
+###############################################################################
+# Runtime path detection (Supports System, AppImage, and Local Dev)
+###############################################################################
 
-if [ -f /usr/lib/linux-update/version.txt ]
-then
-
+if [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
+    # 1. Mode: AppImage
     INSTALLED_MODE=1
+    # Ορίζουμε το PROJECT_ROOT και το LIB_DIR να δείχνουν ακριβώς εκεί που 
+    # το builder script σου αντιγράφει τα αρχεία (.sh και version.txt)
+    PROJECT_ROOT="$APPDIR/usr/lib/linux-update"
+    LIB_DIR="$APPDIR/usr/lib/linux-update"
 
+elif [ -f /usr/lib/linux-update/version.txt ]; then
+    # 2. Mode: Κανονική εγκατάσταση στο σύστημα (.deb / .rpm)
+    INSTALLED_MODE=1
     PROJECT_ROOT="/usr/lib/linux-update"
-
     LIB_DIR="/usr/lib/linux-update"
 
 else
-	# shellcheck disable=SC2034
+    # 3. Mode: Τοπική ανάπτυξη (Local Development / Git repo)
+    # shellcheck disable=SC2034
     INSTALLED_MODE=0
-
-    SCRIPT_DIR="$(
-        cd "$(dirname "${BASH_SOURCE[0]}")" \
-        && pwd
-    )"
-
+    # shellcheck disable=SC2128
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE}")" && pwd)"
     PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-
-    LIB_DIR="$PROJECT_ROOT/lib"
-
+    LIB_DIR="$PROJECT_ROOT/src/system"
 fi
+
+
 
 ###############################################################################
 # Version
 ###############################################################################
 
-VERSION=$(<"$PROJECT_ROOT/version.txt")
+VERSION=$(<"$LIB_DIR/version.txt")
 
 echo "linux-update $VERSION"
 
@@ -65,12 +70,9 @@ echo "linux-update $VERSION"
 case "${1:-}" in
 
     self-update)
-
         # shellcheck disable=SC1091
         source "$LIB_DIR/self-update.sh"
-
-        self_update
-
+        # self_update  <-- Διαγραφή ή σχόλιο εδώ
         exit 0
         ;;
 

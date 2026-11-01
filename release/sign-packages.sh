@@ -71,7 +71,7 @@ cd "$DIST_DIR"
 ###############################################################################
 
 echo
-echo "[1/9] Discover packages"
+echo "[1/8] Discover packages"
 
 shopt -s nullglob
 
@@ -84,33 +84,16 @@ fi
 
 printf '  %s\n' "${PACKAGES[@]}"
 
+
 ###############################################################################
 # Step 2
-# Create SHA256SUMS.
-#
-# This file contains hashes of all release packages.
-# Users can later run:
-#
-#   sha256sum -c SHA256SUMS
-#
-###############################################################################
-
-echo
-echo "[2/9] Create SHA256SUMS"
-
-sha256sum "${PACKAGES[@]}" > SHA256SUMS
-
-echo "Created SHA256SUMS"
-
-###############################################################################
-# Step 3
 # Locate the GPG secret key used for signing.
 #
 # The key MUST exist in the current user's GPG keyring.
 ###############################################################################
 
 echo
-echo "[3/9] Locate GPG secret key"
+echo "[2/8] Locate GPG secret key"
 
 KEY_ID=$(
     gpg --list-secret-keys --with-colons \
@@ -125,7 +108,7 @@ fi
 echo "Using key: $KEY_ID"
 
 ###############################################################################
-# Step 4
+# Step 3
 # Export the public key.
 #
 # This file is distributed with releases so users can verify:
@@ -136,7 +119,7 @@ echo "Using key: $KEY_ID"
 ###############################################################################
 
 echo
-echo "[4/9] Export public key"
+echo "[3/8] Export public key"
 
 gpg \
     --armor \
@@ -146,7 +129,7 @@ gpg \
 echo "Created public.key"
 
 ###############################################################################
-# Step 5
+# Step 4
 # Sign SHA256SUMS.
 #
 # Creates:
@@ -157,7 +140,7 @@ echo "Created public.key"
 ###############################################################################
 
 echo
-echo "[5/9] Sign SHA256SUMS"
+echo "[4/8] Sign SHA256SUMS"
 
 rm -f SHA256SUMS.asc
 
@@ -170,14 +153,14 @@ gpg \
 echo "Created SHA256SUMS.asc"
 
 ###############################################################################
-# Step 6
+# Step 5
 # Verify the signature we just created.
 #
 # This acts as a sanity check during release creation.
 ###############################################################################
 
 echo
-echo "[6/9] Verify SHA256SUMS signature"
+echo "[5/8] Verify SHA256SUMS signature"
 
 gpg \
     --verify \
@@ -185,93 +168,90 @@ gpg \
     SHA256SUMS
 
 echo "Signature verification OK"
+###############################################################################
+# Step 6
+# Sign DEB and AppImage packages.
+#
+# For AppImage: Creates a detached .sig file.
+# For DEB: Embeds the signature inside the .deb file using dpkg-sig.
+###############################################################################
+
+echo
+echo "[6/8] DEB & AppImage package signing"
+
+# 7a. Υπογραφή AppImage (Εξωτερική υπογραφή)
+for appimage in *.AppImage
+do
+    echo "Signing AppImage: $appimage"
+    rm -f "${appimage}.sig"
+    gpg --local-user "$KEY_ID" --detach-sign "$appimage"
+    gpg --verify "${appimage}.sig" "$appimage"
+done
+
+# 7b. Υπογραφή DEB (Εσωτερική υπογραφή συστήματος)
+if command -v dpkg-sig >/dev/null 2>&1; then
+    for debfile in *.deb
+    do
+        echo "Embedding GPG signature into $debfile"
+        # Υπογράφει το deb εσωτερικά με το κλειδί σου
+        dpkg-sig -g "--local-user $KEY_ID" --sign builder "$debfile"
+        # Επαλήθευση της εσωτερικής υπογραφής
+        dpkg-sig --verify "$debfile"
+    done
+else
+    echo "WARNING: dpkg-sig command not found! DEB packages will NOT be system-signed."
+fi
 
 ###############################################################################
 # Step 7
-# Create detached signatures for DEB packages.
-#
-# Example:
-#
-#   linux-update_0.3.0.deb
-#   linux-update_0.3.0.deb.sig
-#
-# Verification:
-#
-#   gpg --verify package.deb.sig package.deb
-#
-###############################################################################
-
-echo
-echo "[7/9] Create detached signatures"
-
-for file in *.deb *.AppImage
-do
-    sigfile="${file}.sig"
-
-    rm -f "$sigfile"
-
-    echo "Signing $file"
-
-    gpg \
-        --local-user "$KEY_ID" \
-        --detach-sign \
-        "$file"
-
-    gpg \
-        --verify \
-        "$sigfile" \
-        "$file"
-
-    echo "Verified $sigfile"
-done
-
-###############################################################################
-# Step 8
 # Sign RPM packages.
 #
-# This embeds an OpenPGP signature directly inside the RPM.
-#
-# Verification:
-#
-#   rpm -Kv package.rpm
-#
+# Configures RPM macros and embeds an OpenPGP signature directly inside the RPM.
 ###############################################################################
 
 echo
-echo "[8/9] RPM package signing"
+echo "[7/8] RPM package signing"
 
 if command -v rpm >/dev/null 2>&1; then
+
+    # Κρίσιμο βήμα: Ρύθμιση των RPM macros για να ξέρει το RPM ποιο κλειδί να χρησιμοποιήσει
+    echo "Configuring ~/.rpmmacros for key $KEY_ID"
+    echo "%_signature gpg" > ~/.rpmmacros
+    echo "%_gpg_path ~/.gnupg" >> ~/.rpmmacros
+    echo "%_gpg_name $KEY_ID" >> ~/.rpmmacros
+    echo "%__gpg %{_bindir}/gpg" >> ~/.rpmmacros
 
     for rpmfile in *.rpm
     do
         echo "Signing $rpmfile"
-
+        
+        # Υπογραφή με χρήση του rpm-sign
         rpm --addsign "$rpmfile"
 
+        # Έλεγχος αν η υπογραφή έγινε αποδεκτή από το σύστημα RPM
         rpm -Kv "$rpmfile"
 
         echo "RPM signature verified"
     done
-
 else
     echo "rpm command not found - skipped"
 fi
 
 
 ###############################################################################
-# Final summary
+# Step 8
+# Create SHA256SUMS.
+#
+# This file contains hashes of all release packages.
+# Users can later run:
+#
+#   sha256sum -c SHA256SUMS
+#
 ###############################################################################
 
 echo
-echo "Artifacts created:"
+echo "[2/8] Create SHA256SUMS"
 
-ls -lh \
-    -- *.deb \
-    *.rpm \
-    *.sig \
-    SHA256SUMS \
-    SHA256SUMS.asc \
-    public.key
+sha256sum "${PACKAGES[@]}" > SHA256SUMS
 
-echo
-echo "Completed successfully"
+echo "Created SHA256SUMS"
