@@ -217,6 +217,7 @@ if command -v rpm >/dev/null 2>&1; then
     # Κρίσιμο βήμα: Ρύθμιση των RPM macros για να ξέρει το RPM ποιο κλειδί να χρησιμοποιήσει
     echo "Configuring ~/.rpmmacros for key $KEY_ID"
     echo "%_signature gpg" > ~/.rpmmacros
+    # shellcheck disable=SC2129
     echo "%_gpg_path ~/.gnupg" >> ~/.rpmmacros
     echo "%_gpg_name $KEY_ID" >> ~/.rpmmacros
     echo "%__gpg %{_bindir}/gpg" >> ~/.rpmmacros
