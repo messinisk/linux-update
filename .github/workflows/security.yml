@@ -1,0 +1,57 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  security-events: write # Απαραίτητο για να εμφανίζονται τα bugs στο GitHub Security Tab
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # 1. Έλεγχος όλων των Shell Scripts με το επίσημο ShellCheck Action
+      - name: ShellCheck Static Analysis
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          severity: warning
+
+      # 2. Έλεγχος των GitHub Actions Workflows με το Checkov
+      - name: GitHub Actions Workflow Security Scan
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: github_actions
+          output_format: sarif
+          output_file_path: results.sarif
+
+      # 3. Ανέβασμα των αποτελεσμάτων του Checkov στο Security Tab του GitHub
+      - name: Upload Checkov results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: results.sarif
+          category: checkov
+
+  codeql-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 4. Βαθύ Security Scanning με το επίσημο CodeQL της GitHub
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'actions'
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
