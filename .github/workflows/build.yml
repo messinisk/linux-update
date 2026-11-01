@@ -16,7 +16,9 @@ jobs:
 
       - name: Verify structure
         run: |
-          test -f bin/linux-update
+          test -f src/linux-update
+          test -f packaging/scripts
+          test -f release/
           test -f version.txt
 
       - name: Check scripts
