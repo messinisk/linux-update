@@ -1,6 +1,0 @@
-#!/bin/sh
-set -e
-
-echo "Removing linux-update"
-
-exit 0

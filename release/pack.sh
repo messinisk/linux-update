@@ -19,22 +19,22 @@ deb)
 rpm)
 	bash packaging/scripts/build-rpm.sh
 	;;
+appimage)
 
-arch)
-	#bash packaging/scripts/build-arch.sh
-	;;
+    bash packaging/scripts/appimage.sh
+    ;;
 
 all)
 	bash packaging/scripts/build-deb.sh
 	bash packaging/scripts/build-rpm.sh
-	# bash packaging/scripts/build-arch.sh
+	bash packaging/scripts/appimage.sh
 	;;
  *)
         echo "Usage:"
         echo "  ./pack.sh check"
         echo "  ./pack.sh deb"
         echo "  ./pack.sh rpm"
-        # echo "  ./pack.sh arch"
+		echo "  ./pack.sh appimage"
         echo "  ./pack.sh all"
         exit 1
         ;;

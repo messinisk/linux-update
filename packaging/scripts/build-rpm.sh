@@ -43,8 +43,7 @@ tar czf \
 # Καθαρισμός προσωρινού φακέλου
 rm -rf "$TMP_DIR"
 
-# Αντιγραφή του SPEC αρχείου
-cp packaging/rpm/linux-update.spec "$RPM_ROOT/SPECS/"
+
 
 echo "Running rpmbuild..."
 

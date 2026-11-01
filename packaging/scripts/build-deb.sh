@@ -72,17 +72,16 @@ sed \
 # Main executable
 ###############################################################################
 
-cp \
-    bin/linux-update \
-    "$BUILD_DIR/usr/bin/"
+cp src/system/*.sh \
+   "$BUILD_DIR/usr/lib/linux-update/"
+
 
 ###############################################################################
 # Library scripts
 ###############################################################################
 
-cp \
-    lib/*.sh \
-    "$BUILD_DIR/usr/lib/linux-update/"
+cp src/commands/*.sh \
+   "$BUILD_DIR/usr/lib/linux-update/"
 
 ###############################################################################
 # Runtime version file
@@ -96,24 +95,20 @@ cp \
 # Documentation
 ###############################################################################
 
-cp \
-    share/doc/linux-update/README.md \
-    "$BUILD_DIR/usr/share/doc/linux-update/"
+cp README.md \
+   "$BUILD_DIR/usr/share/doc/linux-update/"
 
-cp \
-    share/doc/linux-update/changelog.gz \
-    "$BUILD_DIR/usr/share/doc/linux-update/"
+gzip -c CHANGELOG.md \
+ > "$BUILD_DIR/usr/share/doc/linux-update/changelog.gz"
 
-cp \
-    share/doc/linux-update/copyright \
+cp copyright \
     "$BUILD_DIR/usr/share/doc/linux-update/"
 
 ###############################################################################
 # License
 ###############################################################################
 
-cp \
-    share/licenses/linux-update/LICENSE \
+cp LICENSE \
     "$BUILD_DIR/usr/share/licenses/linux-update/"
 
 ###############################################################################

@@ -1,5 +1,5 @@
 Name:           linux-update
-Version:        0.4.0
+Version:        0.4.2
 Release:        1%{?dist}
 Summary:        Universal Linux update tool
 
@@ -41,10 +41,13 @@ Oracle Linux , AlmaLinux ,Rocky Linux Plus 9.
 mkdir -p %{buildroot}/usr/bin
 mkdir -p %{buildroot}/usr/lib/linux-update
 
-install -m 755 bin/linux-update \
+install -m 755 src/linux-update \
     %{buildroot}/usr/bin/linux-update
 
-install -m 644 lib/*.sh \
+install -m 644 src/system/*.sh \
+    %{buildroot}/usr/lib/linux-update/
+
+install -m 644 src/commands/*.sh \
     %{buildroot}/usr/lib/linux-update/
 
 install -m 644 version.txt \

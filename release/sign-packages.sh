@@ -202,25 +202,25 @@ echo "Signature verification OK"
 ###############################################################################
 
 echo
-echo "[7/9] Create DEB detached signatures"
+echo "[7/9] Create detached signatures"
 
-for debfile in *.deb
+for file in *.deb *.AppImage
 do
-    sigfile="${debfile}.sig"
+    sigfile="${file}.sig"
 
     rm -f "$sigfile"
 
-    echo "Signing $debfile"
+    echo "Signing $file"
 
     gpg \
         --local-user "$KEY_ID" \
         --detach-sign \
-        "$debfile"
+        "$file"
 
     gpg \
         --verify \
         "$sigfile" \
-        "$debfile"
+        "$file"
 
     echo "Verified $sigfile"
 done
@@ -257,37 +257,6 @@ else
     echo "rpm command not found - skipped"
 fi
 
-###############################################################################
-# Step 9
-# Optional DEB embedded signing.
-#
-# dpkg-sig is not installed by default on all systems.
-#
-# If available:
-#
-#   dpkg-sig --verify package.deb
-#
-###############################################################################
-
-echo
-echo "[9/9] DEB package signing"
-
-if command -v dpkg-sig >/dev/null 2>&1; then
-
-    for debfile in *.deb
-    do
-        echo "Signing $debfile"
-
-        dpkg-sig \
-            --sign builder \
-            "$debfile"
-
-        echo "OK"
-    done
-
-else
-    echo "dpkg-sig not installed - skipped"
-fi
 
 ###############################################################################
 # Final summary
