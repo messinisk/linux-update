@@ -19,6 +19,7 @@ jobs:
       - name: Run ShellCheck
         run: |
           shellcheck src/linux-update
-          shellcheck packaging/scripts
-          shellcheck release/
+          shellcheck packaging/scripts/*.sh
+          shellcheck src/system/*.sh
+          shellcheck release/*.sh
           shellcheck version.txt

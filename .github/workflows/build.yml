@@ -17,12 +17,13 @@ jobs:
       - name: Verify structure
         run: |
           test -f src/linux-update
-          test -f packaging/scripts
-          test -f release/
+          test -f packaging/scripts/*.sh
+          test -f release/*.sh
+          test -f src/system/*.sh
           test -f version.txt
 
       - name: Check scripts
         run: |
-          chmod +x bin/linux-update
-          bash -n bin/linux-update
-          bash -n lib/*.sh
+          chmod +x src/linux-update
+          bash -n src/linux-update
+          bash -n src/system/*.sh
