@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.5.0 Development - 2026-11-02
+
+✅ apt support
+✅ dnf support
+✅ zypper support
+
+✅ DEB packages
+✅ RPM packages
+✅ AppImage packages
+
+✅ SHA256SUMS
+✅ SHA256SUMS.asc
+✅ public.key
+
+✅ RPM signatures
+✅ DEB detached signatures
+✅ AppImage detached signatures
+
+✅ self-update prototype
+
+✅ src/ refactor
+✅ release/ refactor
+✅ packaging/ refactor
+
+
 ## [0.4.2] - 2026-11-01
 
 ### Added
