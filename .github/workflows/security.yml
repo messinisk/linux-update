@@ -37,7 +37,7 @@ jobs:
 
       # 3. Ανέβασμα των αποτελεσμάτων του Checkov στο Security Tab του GitHub
       - name: Upload Checkov results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: results.sarif
@@ -51,9 +51,9 @@ jobs:
 
       # 4. Βαθύ Security Scanning με το επίσημο CodeQL της GitHub
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: 'actions'
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4

@@ -29,37 +29,43 @@
 # Runtime path detection (Supports System, AppImage, and Local Dev)
 ###############################################################################
 
-if [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
-    # 1. Mode: AppImage
+# shellcheck disable=SC2128
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE}")" && pwd)"
+
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+
+if [ -f "$REPO_ROOT/src/system/osdetect.sh" ]; then
+
+    INSTALLED_MODE=0
+    PROJECT_ROOT="$REPO_ROOT"
+    LIB_DIR="$PROJECT_ROOT/src/system"
+
+elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
+
     INSTALLED_MODE=1
-    # Ορίζουμε το PROJECT_ROOT και το LIB_DIR να δείχνουν ακριβώς εκεί που 
-    # το builder script σου αντιγράφει τα αρχεία (.sh και version.txt)
     PROJECT_ROOT="$APPDIR/usr/lib/linux-update"
     LIB_DIR="$APPDIR/usr/lib/linux-update"
 
 elif [ -f /usr/lib/linux-update/version.txt ]; then
-    # 2. Mode: Κανονική εγκατάσταση στο σύστημα (.deb / .rpm)
+
+    # shellcheck disable=SC2034
     INSTALLED_MODE=1
     PROJECT_ROOT="/usr/lib/linux-update"
-    LIB_DIR="/usr/lib/linux-update"
+    LIB_DIR="src/system"
 
 else
-    # 3. Mode: Τοπική ανάπτυξη (Local Development / Git repo)
-    # shellcheck disable=SC2034
-    INSTALLED_MODE=0
-    # shellcheck disable=SC2128
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE}")" && pwd)"
-    PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-    LIB_DIR="$PROJECT_ROOT/src/system"
-fi
 
+    echo "Cannot locate runtime files"
+    exit 1
+
+fi
 
 
 ###############################################################################
 # Version
 ###############################################################################
 
-VERSION=$(<"$LIB_DIR/version.txt")
+VERSION=$(<"$PROJECT_ROOT/version.txt")
 
 echo "linux-update $VERSION"
 
@@ -98,11 +104,10 @@ echo "Package manager: $PACKAGE_MANAGER"
 case "$PACKAGE_MANAGER" in
 
     apt)
-
         # shellcheck disable=SC1091
         source "$LIB_DIR/apt.sh"
 
-        update_system
+        info_apt
         ;;
 
     dnf)
@@ -110,7 +115,7 @@ case "$PACKAGE_MANAGER" in
         # shellcheck disable=SC1091
         source "$LIB_DIR/dnf.sh"
 
-        update_system
+        info_dnf
         ;;
 
     zypper)
@@ -118,7 +123,7 @@ case "$PACKAGE_MANAGER" in
         # shellcheck disable=SC1091
         source "$LIB_DIR/zypper.sh"
 
-        update_system
+        info_zypper
         ;;
 
     *)
