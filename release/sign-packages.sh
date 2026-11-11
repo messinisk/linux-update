@@ -11,7 +11,6 @@
 #   5. Verify SHA256SUMS signature
 #   6. Create detached signatures for all DEB packages (*.deb.sig)
 #   7. Sign RPM packages using embedded RPM/OpenPGP signatures
-#   8. (Optional) Sign DEB packages with dpkg-sig if available
 #
 # Output artifacts:
 #
@@ -87,13 +86,32 @@ printf '  %s\n' "${PACKAGES[@]}"
 
 ###############################################################################
 # Step 2
+# Create SHA256SUMS.
+#
+# This file contains hashes of all release packages.
+# Users can later run:
+#
+#   sha256sum -c SHA256SUMS
+#
+###############################################################################
+
+echo
+echo "[2/8] Create SHA256SUMS"
+
+sha256sum "${PACKAGES[@]}" > SHA256SUMS
+
+echo "Created SHA256SUMS"
+
+
+###############################################################################
+# Step 3
 # Locate the GPG secret key used for signing.
 #
 # The key MUST exist in the current user's GPG keyring.
 ###############################################################################
 
 echo
-echo "[2/8] Locate GPG secret key"
+echo "[3/8] Locate GPG secret key"
 
 KEY_ID=$(
     gpg --list-secret-keys --with-colons \
@@ -108,7 +126,7 @@ fi
 echo "Using key: $KEY_ID"
 
 ###############################################################################
-# Step 3
+# Step 4
 # Export the public key.
 #
 # This file is distributed with releases so users can verify:
@@ -119,7 +137,7 @@ echo "Using key: $KEY_ID"
 ###############################################################################
 
 echo
-echo "[3/8] Export public key"
+echo "[4/8] Export public key"
 
 gpg \
     --armor \
@@ -128,8 +146,9 @@ gpg \
 
 echo "Created public.key"
 
+
 ###############################################################################
-# Step 4
+# Step 5
 # Sign SHA256SUMS.
 #
 # Creates:
@@ -140,7 +159,7 @@ echo "Created public.key"
 ###############################################################################
 
 echo
-echo "[4/8] Sign SHA256SUMS"
+echo "[5/8] Sign SHA256SUMS"
 
 rm -f SHA256SUMS.asc
 
@@ -153,14 +172,14 @@ gpg \
 echo "Created SHA256SUMS.asc"
 
 ###############################################################################
-# Step 5
+# Step 6
 # Verify the signature we just created.
 #
 # This acts as a sanity check during release creation.
 ###############################################################################
 
 echo
-echo "[5/8] Verify SHA256SUMS signature"
+echo "[6/8] Verify SHA256SUMS signature"
 
 gpg \
     --verify \
@@ -169,15 +188,14 @@ gpg \
 
 echo "Signature verification OK"
 ###############################################################################
-# Step 6
+# Step 7
 # Sign DEB and AppImage packages.
 #
 # For AppImage: Creates a detached .sig file.
-# For DEB: Embeds the signature inside the .deb file using dpkg-sig.
 ###############################################################################
 
 echo
-echo "[6/8] DEB & AppImage package signing"
+echo "[7/8] DEB & AppImage package signing"
 
 # 7a. Υπογραφή AppImage (Εξωτερική υπογραφή)
 for appimage in *.AppImage
@@ -188,29 +206,16 @@ do
     gpg --verify "${appimage}.sig" "$appimage"
 done
 
-# 7b. Υπογραφή DEB (Εσωτερική υπογραφή συστήματος)
-if command -v dpkg-sig >/dev/null 2>&1; then
-    for debfile in *.deb
-    do
-        echo "Embedding GPG signature into $debfile"
-        # Υπογράφει το deb εσωτερικά με το κλειδί σου
-        dpkg-sig -g "--local-user $KEY_ID" --sign builder "$debfile"
-        # Επαλήθευση της εσωτερικής υπογραφής
-        dpkg-sig --verify "$debfile"
-    done
-else
-    echo "WARNING: dpkg-sig command not found! DEB packages will NOT be system-signed."
-fi
 
 ###############################################################################
-# Step 7
+# Step 8
 # Sign RPM packages.
 #
 # Configures RPM macros and embeds an OpenPGP signature directly inside the RPM.
 ###############################################################################
 
 echo
-echo "[7/8] RPM package signing"
+echo "[8/8] RPM package signing"
 
 if command -v rpm >/dev/null 2>&1; then
 
@@ -239,20 +244,3 @@ else
 fi
 
 
-###############################################################################
-# Step 8
-# Create SHA256SUMS.
-#
-# This file contains hashes of all release packages.
-# Users can later run:
-#
-#   sha256sum -c SHA256SUMS
-#
-###############################################################################
-
-echo
-echo "[2/8] Create SHA256SUMS"
-
-sha256sum "${PACKAGES[@]}" > SHA256SUMS
-
-echo "Created SHA256SUMS"

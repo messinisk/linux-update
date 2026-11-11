@@ -37,21 +37,33 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 if [ -f "$REPO_ROOT/src/system/osdetect.sh" ]; then
 
     INSTALLED_MODE=0
+
     PROJECT_ROOT="$REPO_ROOT"
+
     LIB_DIR="$PROJECT_ROOT/src/system"
+
+    COMMAND_DIR="$PROJECT_ROOT/src/commands"
 
 elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
 
     INSTALLED_MODE=1
+
     PROJECT_ROOT="$APPDIR/usr/lib/linux-update"
-    LIB_DIR="$APPDIR/usr/lib/linux-update"
+
+    LIB_DIR="$PROJECT_ROOT"
+
+    COMMAND_DIR="$PROJECT_ROOT"
 
 elif [ -f /usr/lib/linux-update/version.txt ]; then
 
     # shellcheck disable=SC2034
     INSTALLED_MODE=1
+
     PROJECT_ROOT="/usr/lib/linux-update"
-    LIB_DIR="src/system"
+
+    LIB_DIR="$PROJECT_ROOT"
+
+    COMMAND_DIR="$PROJECT_ROOT"
 
 else
 
@@ -76,9 +88,11 @@ echo "linux-update $VERSION"
 case "${1:-}" in
 
     self-update)
+        export PROJECT_ROOT
+        export LIB_DIR
+        export COMMAND_DIR
         # shellcheck disable=SC1091
-        source "$LIB_DIR/self-update.sh"
-        # self_update  <-- Διαγραφή ή σχόλιο εδώ
+        source "$COMMAND_DIR/self-update.sh"
         exit 0
         ;;
 

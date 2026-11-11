@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2012
 
 ###############################################################################
 # linux-update self updater
@@ -39,16 +40,14 @@ trap cleanup EXIT
 # Read current version (Dynamic detection for System or AppImage)
 ###############################################################################
 
-if [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
-    # Αν τρέχει μέσα από το AppImage
-    CURRENT_VERSION=$(< "$APPDIR/usr/lib/linux-update/version.txt")
-else
-    # Αν τρέχει ως κανονική εγκατάσταση στο σύστημα
-    CURRENT_VERSION=$(< /usr/lib/linux-update/version.txt)
-fi
+###############################################################################
+# Read current version
+###############################################################################
 
+CURRENT_VERSION=$(< "$PROJECT_ROOT/version.txt")
 
 echo "Current version: $CURRENT_VERSION"
+
 
 ###############################################################################
 # Discover latest stable GitHub release
@@ -63,6 +62,26 @@ curl -fsSL \
 )
 
 echo "Latest version:  $LATEST_VERSION"
+
+###############################################################################
+# Version checks
+###############################################################################
+
+if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]
+then
+    echo "Already up to date."
+    exit 0
+fi
+
+if [ "$CURRENT_VERSION" \> "$LATEST_VERSION" ]
+then
+    echo
+    echo "Installed version is newer than the latest release."
+    echo "Self-update aborted."
+    exit 0
+fi
+
+
 
 ###############################################################################
 # Already up-to-date
@@ -167,6 +186,12 @@ rollback_deb() {
     echo
     echo "Rolling back DEB package..."
 
+    if [ ! -f "$TMPDIR/backup/current.deb" ]
+    then
+        echo "ERROR: No backup package available."
+        exit 1
+    fi
+
     sudo dpkg -i "$TMPDIR/backup/current.deb"
 
     exit 1
@@ -177,6 +202,12 @@ rollback_rpm() {
     echo
     echo "Rolling back RPM package..."
 
+    if [ ! -f "$TMPDIR/backup/current.rpm" ]
+    then
+        echo "ERROR: No backup package available."
+        exit 1
+    fi
+
     sudo rpm \
          -Uvh \
          --oldpackage \
@@ -184,7 +215,6 @@ rollback_rpm() {
 
     exit 1
 }
-
 ###############################################################################
 # Create backup
 ###############################################################################
@@ -203,12 +233,26 @@ then
     if command -v dpkg-repack >/dev/null 2>&1
     then
 
-        dpkg-repack linux-update
+    echo "Creating package backup..."
 
-        mv linux-update*.deb \
+    dpkg-repack linux-update
+
+    BACKUP_FILE=$(ls linux-update*.deb 2>/dev/null | head -n1)
+
+    if [ -n "$BACKUP_FILE" ]
+    then
+        mv "$BACKUP_FILE" \
            "$TMPDIR/backup/current.deb"
-
+    else
+        echo "WARNING: Backup package not generated."
     fi
+
+else
+
+    echo "WARNING: dpkg-repack not installed"
+    echo "Rollback will not be available"
+
+fi
 
     echo "Installing update..."
 
@@ -236,7 +280,7 @@ fi
 # Final verification
 ###############################################################################
 
-NEW_VERSION=$(< /usr/lib/linux-update/version.txt)
+NEW_VERSION=$(< "$PROJECT_ROOT/version.txt")
 
 if [ "$NEW_VERSION" != "$LATEST_VERSION" ]
 then
