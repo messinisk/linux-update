@@ -59,12 +59,17 @@ echo "linux-update $VERSION"
 # Load framework
 ###############################################################################
 
+# shellcheck disable=SC1091
 source "$UI_DIR/menu.sh"
 
+# shellcheck disable=SC1091
 source "$LIB_DIR/osdetect.sh"
 
+# shellcheck disable=SC1091
 source "$COMMAND_DIR/self-update.sh"
+# shellcheck disable=SC1091
 source "$COMMAND_DIR/version.sh"
+# shellcheck disable=SC1091
 source "$COMMAND_DIR/verify.sh"
 
 ###############################################################################
@@ -93,6 +98,7 @@ do
 
                 apt)
 
+                    # shellcheck disable=SC1091
                     source "$LIB_DIR/apt.sh"
 
                     info_apt
@@ -100,6 +106,7 @@ do
 
                 dnf)
 
+                    # shellcheck disable=SC1091
                     source "$LIB_DIR/dnf.sh"
 
                     info_dnf
@@ -107,6 +114,7 @@ do
 
                 zypper)
 
+                    # shellcheck disable=SC1091
                     source "$LIB_DIR/zypper.sh"
 
                     info_zypper
