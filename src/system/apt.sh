@@ -9,19 +9,9 @@ info_apt() {
     while true
     do
 
-        echo
-        echo "APT Operations"
-        echo
-        echo "1) Update package lists"
-        echo "2) Upgrade packages"
-        echo "3) Remove unused packages"
-        echo "4) Clean package cache"
-        echo "5) Exit"
-        echo
+        show_package_menu "APT Operations"
 
-        read -rp "Selection: " option
-
-        case "$option" in
+        case "$MENU_SELECTION" in
 
             1)
                 update_apt
@@ -41,11 +31,6 @@ info_apt() {
 
             5)
                 break
-                ;;
-
-            *)
-                echo
-                echo "Invalid selection"
                 ;;
 
         esac

@@ -1,21 +1,15 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 
-info_zypper(){
-	while true
+
+info_zypper() {
+
+    while true
     do
-        echo
-        echo "zypper Operations"
-        echo
-        echo "1) Update metadata"
-        echo "2) Upgrade packages"
-        echo "3) Remove unused packages"
-        echo "4) Clean cache"
-        echo "5) Exit"
-        echo
 
-        read -rp "Selection: " option
+        show_package_menu "ZYPPER Operations"
 
-        case "$option" in
+        case "$?" in
 
             1) update_zypper ;;
             2) upgrade_zypper ;;
@@ -23,9 +17,8 @@ info_zypper(){
             4) clean_zypper ;;
             5) break ;;
 
-            *) echo "Invalid selection" ;;
-
         esac
+
     done
 }
 

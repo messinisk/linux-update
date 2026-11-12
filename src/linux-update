@@ -1,42 +1,16 @@
 #!/usr/bin/env bash
 
-###############################################################################
-# linux-update
-#
-# Development mode:
-#
-#   repo/
-#   ├── bin/linux-update
-#   ├── lib/
-#   └── version.txt
-#
-# Installed mode:
-#
-#   /usr/bin/linux-update
-#   /usr/lib/linux-update/
-#       apt.sh
-#       dnf.sh
-#       osdetect.sh
-#       self-update.sh
-#       version.txt
-#
-###############################################################################
+set -euo pipefail
 
 ###############################################################################
-# Runtime path detection
-###############################################################################
-###############################################################################
-# Runtime path detection (Supports System, AppImage, and Local Dev)
+# Runtime detection
 ###############################################################################
 
-# shellcheck disable=SC2128
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
 if [ -f "$REPO_ROOT/src/system/osdetect.sh" ]; then
-
-    INSTALLED_MODE=0
 
     PROJECT_ROOT="$REPO_ROOT"
 
@@ -44,9 +18,9 @@ if [ -f "$REPO_ROOT/src/system/osdetect.sh" ]; then
 
     COMMAND_DIR="$PROJECT_ROOT/src/commands"
 
-elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
+    UI_DIR="$PROJECT_ROOT/src/ui"
 
-    INSTALLED_MODE=1
+elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
 
     PROJECT_ROOT="$APPDIR/usr/lib/linux-update"
 
@@ -54,10 +28,9 @@ elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
 
     COMMAND_DIR="$PROJECT_ROOT"
 
-elif [ -f /usr/lib/linux-update/version.txt ]; then
+    UI_DIR="$PROJECT_ROOT"
 
-    # shellcheck disable=SC2034
-    INSTALLED_MODE=1
+elif [ -f /usr/lib/linux-update/version.txt ]; then
 
     PROJECT_ROOT="/usr/lib/linux-update"
 
@@ -65,13 +38,14 @@ elif [ -f /usr/lib/linux-update/version.txt ]; then
 
     COMMAND_DIR="$PROJECT_ROOT"
 
+    UI_DIR="$PROJECT_ROOT"
+
 else
 
     echo "Cannot locate runtime files"
     exit 1
 
 fi
-
 
 ###############################################################################
 # Version
@@ -82,69 +56,95 @@ VERSION=$(<"$PROJECT_ROOT/version.txt")
 echo "linux-update $VERSION"
 
 ###############################################################################
-# Self update
+# Load framework
 ###############################################################################
 
-case "${1:-}" in
+source "$UI_DIR/menu.sh"
 
-    self-update)
-        export PROJECT_ROOT
-        export LIB_DIR
-        export COMMAND_DIR
-        # shellcheck disable=SC1091
-        source "$COMMAND_DIR/self-update.sh"
-        exit 0
-        ;;
-
-esac
-
-###############################################################################
-# Normal system update flow
-###############################################################################
-
-echo "Running system update..."
-
-# shellcheck disable=SC1091
 source "$LIB_DIR/osdetect.sh"
+
+source "$COMMAND_DIR/self-update.sh"
+source "$COMMAND_DIR/version.sh"
+source "$COMMAND_DIR/verify.sh"
+
+###############################################################################
+# Detect package manager
+###############################################################################
 
 detect_package_manager
 
+echo "Running system update..."
 echo "Package manager: $PACKAGE_MANAGER"
 
 ###############################################################################
-# Invoke package manager implementation
+# Main menu
 ###############################################################################
 
-case "$PACKAGE_MANAGER" in
+while true
+do
 
-    apt)
-        # shellcheck disable=SC1091
-        source "$LIB_DIR/apt.sh"
+    show_main_menu
 
-        info_apt
-        ;;
+    case "$MENU_SELECTION" in
 
-    dnf)
+        1)
 
-        # shellcheck disable=SC1091
-        source "$LIB_DIR/dnf.sh"
+            case "$PACKAGE_MANAGER" in
 
-        info_dnf
-        ;;
+                apt)
 
-    zypper)
+                    source "$LIB_DIR/apt.sh"
 
-        # shellcheck disable=SC1091
-        source "$LIB_DIR/zypper.sh"
+                    info_apt
+                    ;;
 
-        info_zypper
-        ;;
+                dnf)
 
-    *)
+                    source "$LIB_DIR/dnf.sh"
 
-        echo "Unsupported package manager"
+                    info_dnf
+                    ;;
 
-        exit 1
-        ;;
+                zypper)
 
-esac
+                    source "$LIB_DIR/zypper.sh"
+
+                    info_zypper
+                    ;;
+
+                *)
+
+                    echo "Unsupported package manager"
+                    ;;
+            esac
+            ;;
+
+        2)
+
+            run_self_update
+            ;;
+
+        3)
+
+            show_version
+            ;;
+
+        4)
+
+            run_verify
+            ;;
+
+        5)
+
+            echo "Goodbye."
+            exit 0
+            ;;
+
+        *)
+
+            echo "Invalid selection"
+            ;;
+
+    esac
+
+done
