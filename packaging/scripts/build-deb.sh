@@ -69,51 +69,13 @@ sed \
     > "$BUILD_DIR/DEBIAN/control"
 
 ###############################################################################
-# Main executable
-###############################################################################
-cp src/linux-update "$BUILD_DIR/usr/bin/linux-update"
-chmod 755  "$BUILD_DIR//usr/bin/linux-update"
-
-cp src/system/*.sh \
-   "$BUILD_DIR/usr/lib/linux-update/"
-
-chmod 755 "$BUILD_DIR/usr/lib/linux-update/"
-
-###############################################################################
-# Library scripts
+# Install runtime tree
 ###############################################################################
 
-cp src/commands/*.sh \
-   "$BUILD_DIR/usr/lib/linux-update/"
+# shellcheck disable=SC1091
+source packaging/scripts/install-tree.sh
 
-###############################################################################
-# Runtime version file
-###############################################################################
-
-cp \
-    version.txt \
-    "$BUILD_DIR/usr/lib/linux-update/"
-
-###############################################################################
-# Documentation
-###############################################################################
-
-cp README.md \
-   "$BUILD_DIR/usr/share/doc/linux-update/"
-
-gzip -c CHANGELOG.md \
- > "$BUILD_DIR/usr/share/doc/linux-update/changelog.gz"
-
-cp copyright \
-    "$BUILD_DIR/usr/share/doc/linux-update/"
-
-###############################################################################
-# License
-###############################################################################
-
-cp LICENSE \
-    "$BUILD_DIR/usr/share/licenses/linux-update/"
-
+install_tree "$BUILD_DIR"
 ###############################################################################
 # md5sums
 ###############################################################################
@@ -127,8 +89,24 @@ cp LICENSE \
 )
 
 ###############################################################################
-# Build package
+#  Validate package contents
 ###############################################################################
+required_files=(
+    "$BUILD_DIR/usr/bin/linux-update"
+    "$BUILD_DIR/usr/lib/linux-update/menu.sh"
+    "$BUILD_DIR/usr/lib/linux-update/osdetect.sh"
+    "$BUILD_DIR/usr/lib/linux-update/self-update.sh"
+    "$BUILD_DIR/usr/lib/linux-update/version.txt"
+)
+
+for file in "${required_files[@]}"
+do
+    if [ ! -f "$file" ]
+    then
+        echo "Missing required file: $file"
+        exit 1
+    fi
+done
 
 dpkg-deb --build "$BUILD_DIR"
 
@@ -148,7 +126,7 @@ echo "$TARGET_DIR"
 # Cleanup
 ###############################################################################
 
-rm -rf build
+# rm -rf build
 
 echo
 echo "DEB build completed successfully"s

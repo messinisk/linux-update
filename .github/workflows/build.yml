@@ -1,41 +1,47 @@
-name: Build
+name: Build Packages
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
-# 🔐 ΠΡΟΣΘΕΣΕ ΑΥΤΕΣ ΤΙΣ ΔΥΟ ΓΡΑΜΜΕΣ ΕΔΩ:
-permissions:
-  contents: read
+
 jobs:
-  build:
+
+  test:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - uses: actions/checkout@v4
 
-      - name: Verify structure
+      - name: Install bats
         run: |
-          # Έλεγχος συγκεκριμένων αρχείων
-          test -f src/linux-update
-          test -f version.txt
-          
-          # Έλεγχος αν υπάρχουν αρχεία .sh στους καταλόγους (loop)
-          for file in packaging/scripts/*.sh release/*.sh src/system/*.sh; do
-            if [ ! -f "$file" ]; then
-              echo "Error: $file does not exist or is not a regular file."
-              exit 1
-            fi
-          done
+          sudo apt update
+          sudo apt install -y bats
 
-      - name: Check scripts
+      - name: Run tests
+        run: bats tests
+
+  package:
+
+    runs-on: ubuntu-latest
+
+    needs: test
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Build DEB
         run: |
-          chmod +x src/linux-update
-          bash -n src/linux-update
-          
-          # Έλεγχος σύνταξης για κάθε script ξεχωριστά
-          for file in src/system/*.sh packaging/scripts/*.sh release/*.sh; do
-            echo "Checking syntax for: $file"
-            bash -n "$file"
-          done
+          bash packaging/scripts/build-deb.sh
+
+      - name: Build RPM
+        run: |
+          bash packaging/scripts/build-rpm.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: build/*

@@ -5,7 +5,29 @@ run_verify() {
     echo
     echo "Verification"
     echo
+    ###############################################################################
+    # Dependencies
+    ###############################################################################
 
+    if command -v curl >/dev/null 2>&1
+    then
+        echo "[OK] curl"
+    else
+        echo "[FAIL] curl"
+        errors=1
+    fi
+
+    ###############################################################################
+    # AppImage support (FUSE)
+    ###############################################################################
+
+    if command -v fusermount >/dev/null 2>&1 ||
+    command -v fusermount3 >/dev/null 2>&1
+    then
+        echo "[OK] FUSE"
+    else
+        echo "[WARN] FUSE not detected"
+    fi
     local errors=0
 
     if [ -f "$PROJECT_ROOT/version.txt" ]

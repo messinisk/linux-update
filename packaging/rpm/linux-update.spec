@@ -38,20 +38,8 @@ Oracle Linux , AlmaLinux ,Rocky Linux Plus 9.
 
 %install
 
-mkdir -p %{buildroot}/usr/bin
-mkdir -p %{buildroot}/usr/lib/linux-update
-
-install -m 755 src/linux-update \
-    %{buildroot}/usr/bin/linux-update
-
-install -m 644 src/system/*.sh \
-    %{buildroot}/usr/lib/linux-update/
-
-install -m 644 src/commands/*.sh \
-    %{buildroot}/usr/lib/linux-update/
-
-install -m 644 version.txt \
-    %{buildroot}/usr/lib/linux-update/
+bash packaging/scripts/install-tree.sh \
+    %{buildroot}
 
 %files
 

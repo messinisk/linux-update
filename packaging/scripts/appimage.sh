@@ -24,24 +24,13 @@ mkdir -p "$APPDIR/usr/bin"
 mkdir -p "$APPDIR/usr/lib/linux-update"
 
 ###############################################################################
-# Main executable
+# Install application tree
 ###############################################################################
 
-cp src/linux-update \
-   "$APPDIR/usr/bin/linux-update"
+# shellcheck disable=SC1091
+source packaging/scripts/install-tree.sh
 
-###############################################################################
-# Runtime modules
-###############################################################################
-
-cp src/system/*.sh \
-   "$APPDIR/usr/lib/linux-update/"
-
-cp src/commands/*.sh \
-   "$APPDIR/usr/lib/linux-update/"
-
-cp version.txt \
-   "$APPDIR/usr/lib/linux-update/"
+install_tree "$APPDIR"
 
 ###############################################################################
 # AppRun
@@ -95,4 +84,4 @@ echo
 echo "Created:"
 echo "$TARGET_DIR/linux-update-${VERSION}-x86_64.AppImage"
 
-rm -rf build
+# rm -rf build
