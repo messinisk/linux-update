@@ -17,9 +17,17 @@
 
 @test "deb build contains menu.sh" {
 
-    # shellcheck disable=SC2012
-    PACKAGE=$(ls /mnt/c/Windows/Temp/v0.5.0/*.deb | head -n1)
+    VERSION=$(<version.txt)
+
+    bash packaging/scripts/build-deb.sh
+
+    PACKAGE=$(
+        find "dist/v${VERSION}" \
+            -name "*.deb" \
+            | head -n1
+    )
+
+    [ -n "$PACKAGE" ]
 
     dpkg-deb -c "$PACKAGE" | grep menu.sh
 }
-
