@@ -4,7 +4,7 @@ set -euo pipefail
 
 VERSION=$(<version.txt)
 
-TARGET_DIR="/mnt/c/Windows/Temp/v${VERSION}"
+TARGET_DIR="${TARGET_DIR:-dist/v${VERSION}}"
 
 APPDIR="build/AppDir"
 

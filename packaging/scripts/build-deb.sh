@@ -27,7 +27,7 @@ VERSION=$(<version.txt)
 
 BUILD_DIR="build/linux-update_${VERSION}"
 
-TARGET_DIR="/mnt/c/Windows/Temp/v${VERSION}"
+TARGET_DIR="${TARGET_DIR:-dist/v${VERSION}}"
 
 echo "linux-update DEB builder"
 echo "Version: $VERSION"

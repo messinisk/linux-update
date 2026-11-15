@@ -53,11 +53,13 @@ rpmbuild \
     -ba \
     "$RPM_ROOT/SPECS/linux-update.spec"
 
-TARGET_DIR="/mnt/c/Windows/Temp/v$VERSION/"
+TARGET_DIR="${TARGET_DIR:-dist/v${VERSION}}"
+mkdir -p "$TARGET_DIR"
 
 # Αντιγραφή των τελικών RPM αρχείων στο Windows Temp
-find "$RPM_ROOT/RPMS" -name "*.rpm" -exec cp {} "$TARGET_DIR/" \;
-
+find "$RPM_ROOT/RPMS" \
+    -name "*.rpm" \
+    -exec cp {} "$TARGET_DIR/" \;
 echo
 echo "RPM packages created successfully:"
 ls -l "$TARGET_DIR"/*.rpm

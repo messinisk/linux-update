@@ -7,6 +7,7 @@
 
     [ "$status" -eq 0 ]
 }
+
 @test "rpm spec does not install source files directly" {
 
     run grep -E \
@@ -40,15 +41,23 @@
     [ "$status" -eq 0 ]
 }
 
-
 @test "rpm package contains runtime files" {
+
+    VERSION=$(<version.txt)
 
     bash packaging/scripts/build-rpm.sh
 
-    RPM_FILE=$(find /mnt/c/Windows/Temp/v0.5.0 \
-        -name "*.rpm" | head -n1)
+    RPM_FILE=$(
+        find "dist/v${VERSION}" \
+            -name "*.rpm" \
+            | head -n1
+    )
+
+    [ -n "$RPM_FILE" ]
 
     run rpm -qlp "$RPM_FILE"
+
+    [ "$status" -eq 0 ]
 
     echo "$output" | grep "linux-update"
     echo "$output" | grep "osdetect.sh"
@@ -59,24 +68,42 @@
 
 @test "rpm package contains menu.sh" {
 
+    VERSION=$(<version.txt)
+
     bash packaging/scripts/build-rpm.sh
 
-    RPM_FILE=$(find /mnt/c/Windows/Temp/v0.5.0 \
-        -name "*.rpm" | head -n1)
+    RPM_FILE=$(
+        find "dist/v${VERSION}" \
+            -name "*.rpm" \
+            | head -n1
+    )
+
+    [ -n "$RPM_FILE" ]
 
     run rpm -qlp "$RPM_FILE"
 
-    echo "$output" | grep menu.sh
+    [ "$status" -eq 0 ]
+
+    echo "$output" | grep "menu.sh"
 }
 
 @test "rpm package contains version.txt" {
 
+    VERSION=$(<version.txt)
+
     bash packaging/scripts/build-rpm.sh
 
-    RPM_FILE=$(find /mnt/c/Windows/Temp/v0.5.0 \
-        -name "*.rpm" | head -n1)
+    RPM_FILE=$(
+        find "dist/v${VERSION}" \
+            -name "*.rpm" \
+            | head -n1
+    )
+
+    [ -n "$RPM_FILE" ]
 
     run rpm -qlp "$RPM_FILE"
 
-    echo "$output" | grep version.txt
+    [ "$status" -eq 0 ]
+
+    echo "$output" | grep "version.txt"
 }
