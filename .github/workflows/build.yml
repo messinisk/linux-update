@@ -12,7 +12,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install bats
         run: |
@@ -30,7 +30,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build DEB
         run: |
@@ -41,7 +41,7 @@ jobs:
           bash packaging/scripts/build-rpm.sh
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages
           path: dist/**
