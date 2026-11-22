@@ -42,7 +42,7 @@ jobs:
 
       - name: Build AppImage
         run: |
-          bash packaging/scripts/build-appimage.sh
+          bash packaging/scripts/appimage.sh
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
