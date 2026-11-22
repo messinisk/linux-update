@@ -40,8 +40,14 @@ jobs:
         run: |
           bash packaging/scripts/build-rpm.sh
 
+      - name: Build AppImage
+        run: |
+          bash packaging/scripts/build-appimage.sh
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
         with:
           name: packages
           path: dist/**
+
+      
