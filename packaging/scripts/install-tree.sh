@@ -26,10 +26,13 @@ install_tree() {
        "$root/usr/lib/linux-update/"
 }
 
-if [ $# -ne 1 ]
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]
 then
-    echo "Usage: $0 <root>"
-    exit 1
-fi
+    if [ $# -ne 1 ]
+    then
+        echo "Usage: $0 <root>"
+        exit 1
+    fi
 
-install_tree "$1"
+    install_tree "$1"
+fi
