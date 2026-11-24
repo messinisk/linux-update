@@ -1,0 +1,52 @@
+name: Cosign Signing
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+
+  sign:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Build Packages
+        run: |
+          bash packaging/scripts/build-deb.sh
+          bash packaging/scripts/build-rpm.sh
+          bash packaging/scripts/appimage.sh
+
+      - name: Sign DEB
+        run: |
+          cosign sign-blob \
+            --yes \
+            dist/v0.5.0/linux-update_0.5.0.deb \
+            --output-signature \
+            dist/v0.5.0/linux-update_0.5.0.deb.sig
+
+      - name: Sign RPM
+        run: |
+          cosign sign-blob \
+            --yes \
+            dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm \
+            --output-signature \
+            dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm.sig
+
+      - name: Sign AppImage
+        run: |
+          cosign sign-blob \
+            --yes \
+            dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage \
+            --output-signature \
+            dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage.sig

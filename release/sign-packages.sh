@@ -74,7 +74,7 @@ echo "[1/8] Discover packages"
 
 shopt -s nullglob
 
-PACKAGES=( *.deb *.rpm )
+PACKAGES=( *.deb *.rpm *.AppImage)
 
 if [ ${#PACKAGES[@]} -eq 0 ]; then
     echo "ERROR: No packages found"

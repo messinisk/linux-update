@@ -1,0 +1,23 @@
+name: SLSA Provenance
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  actions: read
+  contents: read
+  id-token: write
+
+jobs:
+
+  provenance:
+
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2
+
+    with:
+      base64-subjects: |
+        dist/v0.5.0/linux-update_0.5.0.deb
+        dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm
+        dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage

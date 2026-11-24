@@ -46,3 +46,9 @@
   [ -f dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage ]
 }
 
+@test "sign-packages includes AppImage in checksums" {
+
+    run grep "AppImage" release/sign-packages.sh
+
+    [ "$status" -eq 0 ]
+}
