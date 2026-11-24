@@ -2,3 +2,5 @@
 /docs_linux_update
 /build
 /dist
+# Generated repositories
+/repository
