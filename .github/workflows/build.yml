@@ -56,7 +56,7 @@ jobs:
 
     - name: Run packaging tests
       run: |
-        bats tests/package_layout.bats
+        bats tests/ackage_layout.bats
         bats tests/appimage.bats
         bats tests/rpm_layout.bats
         bats tests/rpm_install.bats
