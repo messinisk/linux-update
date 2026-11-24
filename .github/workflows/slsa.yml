@@ -1,9 +1,7 @@
 name: SLSA Provenance
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
 permissions:
   actions: read
@@ -12,12 +10,66 @@ permissions:
 
 jobs:
 
-  provenance:
+  build:
 
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2
+    runs-on: ubuntu-latest
+
+    outputs:
+      deb: ${{ steps.artifacts.outputs.deb }}
+      rpm: ${{ steps.artifacts.outputs.rpm }}
+      appimage: ${{ steps.artifacts.outputs.appimage }}
+
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - name: Build DEB
+        run: |
+          bash packaging/scripts/build-deb.sh
+
+      - name: Build RPM
+        run: |
+          bash packaging/scripts/build-rpm.sh
+
+      - name: Build AppImage
+        run: |
+          bash packaging/scripts/appimage.sh
+
+      - name: Discover artifacts
+        id: artifacts
+        run: |
+
+          DEB=$(find dist -name "*.deb" | head -n1)
+          RPM=$(find dist -name "*.rpm" | head -n1)
+          APPIMAGE=$(find dist -name "*.AppImage" | head -n1)
+
+          echo "deb=$DEB" >> "$GITHUB_OUTPUT"
+          echo "rpm=$RPM" >> "$GITHUB_OUTPUT"
+          echo "appimage=$APPIMAGE" >> "$GITHUB_OUTPUT"
+
+  provenance-deb:
+
+    needs: build
+
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@main
 
     with:
-      base64-subjects: |
-        dist/v0.5.0/linux-update_0.5.0.deb
-        dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm
-        dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage
+      base64-subjects: ${{ needs.build.outputs.deb }}
+
+  provenance-rpm:
+
+    needs: build
+
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@main
+
+    with:
+      base64-subjects: ${{ needs.build.outputs.rpm }}
+
+  provenance-appimage:
+
+    needs: build
+
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@main
+
+    with:
+      base64-subjects: ${{ needs.build.outputs.appimage }}
