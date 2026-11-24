@@ -28,37 +28,39 @@ jobs:
           bats tests/runtime_layout.bats
 
   package:
-      runs-on: ubuntu-latest
-      needs: test
 
-      steps:
-        - uses: actions/checkout@v5
+    runs-on: ubuntu-latest
 
-        - name: Build DEB
-          run: bash packaging/scripts/build-deb.sh
+    needs: test
 
-        - name: Build RPM
-          run: bash packaging/scripts/build-rpm.sh
+    steps:
 
-        - name: Build AppImage
-          run: bash packaging/scripts/appimage.sh
+    - uses: actions/checkout@v5
 
-        - name: Run packaging tests
-          run: |
-            bats tests/package_layout.bats
-            bats tests/rpm_layout.bats
-            bats tests/rpm_install.bats
-            bats tests/appimage.bats
-            bats tests/repository.bats
-            bats tests/repository_integration.bats
-            bats tests/repository_signing.bats
-            bats tests/signing.bats
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          bats \
+          createrepo-c \
+          dpkg-dev
 
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v5
-          with:
-            name: packages
-            path: dist/**
+    - name: Build DEB
+      run: bash packaging/scripts/build-deb.sh
 
+    - name: Build RPM
+      run: bash packaging/scripts/build-rpm.sh
 
-      
+    - name: Build AppImage
+      run: bash packaging/scripts/appimage.sh
+
+    - name: Run packaging tests
+      run: |
+        bats tests/package_layout.bats
+        bats tests/appimage.bats
+        bats tests/rpm_layout.bats
+        bats tests/rpm_install.bats
+        bats tests/repository.bats
+        bats tests/repository_integration.bats
+        bats tests/repository_signing.bats
+        bats tests/signing.bats
