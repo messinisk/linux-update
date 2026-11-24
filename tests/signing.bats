@@ -48,13 +48,13 @@
 
 @test "release signing generates artifacts" {
 
-  run gpg --list-secret-keys
+    run gpg --list-secret-keys
 
-  if [ "$status" -ne 0 ] || [ -z "$output" ]; then
-      skip "No GPG secret key configured"
-  fi
+    if [ "$status" -ne 0 ] || [ -z "$output" ]; then
+        skip "No GPG secret key configured"
+    fi
 
-  run release/sign-packages.sh dist/v0.5.0
+    run release/sign-packages.sh dist/v0.5.0
 
-  [ "$status" -eq 0 ]
+    [ "$status" -eq 0 ]
 }
