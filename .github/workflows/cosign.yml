@@ -1,4 +1,4 @@
-name: Cosign Signing
+name: Cosign
 
 on:
   push:
@@ -11,42 +11,90 @@ permissions:
 
 jobs:
 
-  sign:
+  cosign:
 
     runs-on: ubuntu-latest
 
     steps:
 
-      - uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - uses: sigstore/cosign-installer@v3
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            bats \
+            createrepo-c \
+            dpkg-dev
 
-      - name: Build Packages
+      - name: Build DEB
         run: |
           bash packaging/scripts/build-deb.sh
+
+      - name: Build RPM
+        run: |
           bash packaging/scripts/build-rpm.sh
+
+      - name: Build AppImage
+        run: |
           bash packaging/scripts/appimage.sh
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Discover artifacts
+        run: |
+          VERSION=$(<version.txt)
+
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+          echo "DEB=$(find dist/v${VERSION} -name '*.deb' | head -n1)" >> "$GITHUB_ENV"
+          echo "RPM=$(find dist/v${VERSION} -name '*.rpm' | head -n1)" >> "$GITHUB_ENV"
+          echo "APPIMAGE=$(find dist/v${VERSION} -name '*.AppImage' | head -n1)" >> "$GITHUB_ENV"
+
+      #################################################################
+      # DEB
+      #################################################################
 
       - name: Sign DEB
         run: |
           cosign sign-blob \
             --yes \
-            dist/v0.5.0/linux-update_0.5.0.deb \
-            --output-signature \
-            dist/v0.5.0/linux-update_0.5.0.deb.sig
+            --output-signature "${DEB}.sig" \
+            "$DEB"
+
+      #################################################################
+      # RPM
+      #################################################################
 
       - name: Sign RPM
         run: |
           cosign sign-blob \
             --yes \
-            dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm \
-            --output-signature \
-            dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm.sig
+            --output-signature "${RPM}.sig" \
+            "$RPM"
+
+      #################################################################
+      # APPIMAGE
+      #################################################################
 
       - name: Sign AppImage
         run: |
           cosign sign-blob \
             --yes \
-            dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage \
-            --output-signature \
-            dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage.sig
+            --output-signature "${APPIMAGE}.sig" \
+            "$APPIMAGE"
+
+      - name: Verify signatures
+        run: |
+          test -f "${DEB}.sig"
+          test -f "${RPM}.sig"
+          test -f "${APPIMAGE}.sig"
+
+      - name: Upload signatures
+        uses: actions/upload-artifact@v5
+        with:
+          name: cosign-signatures
+          path: |
+            dist/**/*.sig
