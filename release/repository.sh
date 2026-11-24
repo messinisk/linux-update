@@ -113,7 +113,9 @@ build_repository() {
         exit 1
     }
 
-    rm -rf "$REPO_DIR/$CHANNEL"
+    TARGET_DIR="${REPO_DIR:?}/${CHANNEL:?}"
+
+    rm -rf "$TARGET_DIR"
 
     mkdir -p "$REPO_DIR/$CHANNEL/apt/pool/main"
     mkdir -p "$REPO_DIR/$CHANNEL/rpm"
