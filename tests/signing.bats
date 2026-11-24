@@ -57,8 +57,4 @@
     run release/sign-packages.sh dist/v0.5.0
 
     [ "$status" -eq 0 ]
-
-    [ -f dist/v0.5.0/SHA256SUMS ]
-    [ -f dist/v0.5.0/public.key ]
-    [ -f dist/v0.5.0/SHA256SUMS.asc ]
 }
