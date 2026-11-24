@@ -51,7 +51,7 @@ jobs:
 
     needs: build
 
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@main
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v3
 
     with:
       base64-subjects: ${{ needs.build.outputs.deb }}
