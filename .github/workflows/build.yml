@@ -76,3 +76,14 @@ jobs:
         bats tests/repository_integration.bats
         bats tests/repository_signing.bats
         bats tests/signing.bats
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v5
+      with:
+        name: linux-update-${{ github.sha }}
+        retention-days: 7
+        path: |
+          dist/**/*.deb
+          dist/**/*.rpm
+          dist/**/*.AppImage
+          dist/**/SHA256SUMS
+          dist/**/SHA256SUMS.asc
