@@ -50,9 +50,21 @@ jobs:
 
     - name: Build RPM
       run: bash packaging/scripts/build-rpm.sh
+    - name: Debug version
+      run: |
+        echo "===== VERSION ====="
+        cat version.txt
 
-    - name: Build AppImage
-      run: bash packaging/scripts/appimage.sh
+        echo
+        echo "===== DIST ====="
+        find dist -type f | sort || true
+
+        echo
+        echo "===== RPM SOURCES ====="
+        find build -type f | grep -E "tar.gz|spec" || true
+
+        - name: Build AppImage
+          run: bash packaging/scripts/appimage.sh
 
     - name: Run packaging tests
       run: |

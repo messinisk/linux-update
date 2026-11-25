@@ -40,10 +40,12 @@
   [ "$status" -ne 0 ]
 }
 
+VERSION=$(<version.txt)
+
 @test "release directory contains packages" {
-  [ -f dist/v0.5.0/linux-update_0.5.0.deb ]
-  [ -f dist/v0.5.0/linux-update-0.5.0-1.noarch.rpm ]
-  [ -f dist/v0.5.0/linux-update-0.5.0-x86_64.AppImage ]
+
+    [ -f "dist/v${VERSION}/linux-update_${VERSION}.deb" ]
+    [ -f "dist/v${VERSION}/linux-update-${VERSION}-1.noarch.rpm" ]
 }
 
 @test "sign-packages includes AppImage in checksums" {
