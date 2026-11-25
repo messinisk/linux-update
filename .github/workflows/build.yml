@@ -63,8 +63,8 @@ jobs:
         echo "===== RPM SOURCES ====="
         find build -type f | grep -E "tar.gz|spec" || true
 
-        - name: Build AppImage
-          run: bash packaging/scripts/appimage.sh
+    - name: Build AppImage
+      run: bash packaging/scripts/appimage.sh
 
     - name: Run packaging tests
       run: |
