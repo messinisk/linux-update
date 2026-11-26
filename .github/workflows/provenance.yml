@@ -1,0 +1,88 @@
+name: Provenance
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+
+  provenance:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - name: Build DEB
+        run: |
+          bash packaging/scripts/build-deb.sh
+
+      - name: Build RPM
+        run: |
+          bash packaging/scripts/build-rpm.sh
+
+      - name: Build AppImage
+        run: |
+          bash packaging/scripts/appimage.sh
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Generate Provenance
+        run: |
+
+          VERSION=$(cat version.txt)
+
+          DEB=$(find dist -name "*.deb" | head -n1)
+          RPM=$(find dist -name "*.rpm" | head -n1)
+          APPIMAGE=$(find dist -name "*.AppImage" | head -n1)
+
+          DEB_SHA=$(sha256sum "$DEB" | awk '{print $1}')
+          RPM_SHA=$(sha256sum "$RPM" | awk '{print $1}')
+          APP_SHA=$(sha256sum "$APPIMAGE" | awk '{print $1}')
+
+          cat > provenance.json <<EOF
+            {
+            "project": "linux-update",
+            "version": "${VERSION}",
+            "commit": "${GITHUB_SHA}",
+            "workflow": "${GITHUB_WORKFLOW}",
+            "repository": "${GITHUB_REPOSITORY}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "generated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "artifacts": [
+                {
+                "name": "$(basename "$DEB")",
+                "sha256": "${DEB_SHA}"
+                },
+                {
+                "name": "$(basename "$RPM")",
+                "sha256": "${RPM_SHA}"
+                },
+                {
+                "name": "$(basename "$APPIMAGE")",
+                "sha256": "${APP_SHA}"
+                }
+            ]
+            }
+            EOF
+
+      - name: Sign Provenance
+        run: |
+
+          cosign sign-blob \
+            --yes \
+            provenance.json \
+            --output-signature provenance.json.sig
+
+      - name: Upload Provenance
+        uses: actions/upload-artifact@v5
+        with:
+          name: provenance
+          path: |
+            provenance.json
+            provenance.json.sig
