@@ -15,7 +15,7 @@ jobs:
       hashes: ${{ steps.artifacts.outputs.hashes }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build DEB
         run: bash packaging/scripts/build-deb.sh
@@ -39,6 +39,6 @@ jobs:
       actions: read
       id-token: write
       contents: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa.yml@vmain
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa.yml@v3.0.0
     with:
       base64-subjects: "${{ needs.build.outputs.hashes }}"
