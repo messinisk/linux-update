@@ -15,9 +15,7 @@ if [ -f "$REPO_ROOT/src/system/osdetect.sh" ]; then
     PROJECT_ROOT="$REPO_ROOT"
 
     LIB_DIR="$PROJECT_ROOT/src/system"
-
     COMMAND_DIR="$PROJECT_ROOT/src/commands"
-
     UI_DIR="$PROJECT_ROOT/src/ui"
 
 elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
@@ -25,9 +23,7 @@ elif [ -n "${APPIMAGE+x}" ] && [ -d "$APPDIR" ]; then
     PROJECT_ROOT="$APPDIR/usr/lib/linux-update"
 
     LIB_DIR="$PROJECT_ROOT"
-
     COMMAND_DIR="$PROJECT_ROOT"
-
     UI_DIR="$PROJECT_ROOT"
 
 elif [ -f /usr/lib/linux-update/version.txt ]; then
@@ -35,9 +31,7 @@ elif [ -f /usr/lib/linux-update/version.txt ]; then
     PROJECT_ROOT="/usr/lib/linux-update"
 
     LIB_DIR="$PROJECT_ROOT"
-
     COMMAND_DIR="$PROJECT_ROOT"
-
     UI_DIR="$PROJECT_ROOT"
 
 else
@@ -53,8 +47,6 @@ fi
 
 VERSION=$(<"$PROJECT_ROOT/version.txt")
 
-echo "linux-update $VERSION"
-
 ###############################################################################
 # Load framework
 ###############################################################################
@@ -67,10 +59,44 @@ source "$LIB_DIR/osdetect.sh"
 
 # shellcheck disable=SC1091
 source "$COMMAND_DIR/self-update.sh"
+
 # shellcheck disable=SC1091
 source "$COMMAND_DIR/version.sh"
+
 # shellcheck disable=SC1091
 source "$COMMAND_DIR/verify.sh"
+
+# shellcheck disable=SC1091
+source "$COMMAND_DIR/help.sh"
+
+###############################################################################
+# CLI commands
+###############################################################################
+
+case "${1:-}" in
+
+    help|-h|--help)
+        show_help
+        exit 0
+        ;;
+
+    version|-v|--version)
+        show_version
+        exit 0
+        ;;
+
+    verify)
+        run_verify
+        exit 0
+        ;;
+
+esac
+
+###############################################################################
+# Startup
+###############################################################################
+
+echo "linux-update $VERSION"
 
 ###############################################################################
 # Detect package manager
@@ -124,7 +150,9 @@ do
 
                     echo "Unsupported package manager"
                     ;;
+
             esac
+
             ;;
 
         2)
