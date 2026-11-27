@@ -22,6 +22,8 @@ RPM_ROOT="build/rpm"
 rm -rf "$RPM_ROOT"
 mkdir -p "$RPM_ROOT"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
+mkdir -p build/debian
+
 sed \
   "s/@VERSION@/$VERSION/g" \
   packaging/rpm/linux-update.spec.in \
