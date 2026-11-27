@@ -159,4 +159,6 @@ Current project status:
 
 # License
 
-See LICENSE.
+Apache License 2.0
+# Copyright:
+ 2026 Konstantinos Messinis
