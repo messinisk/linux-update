@@ -105,7 +105,8 @@ jobs:
             "generated":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
           }
           EOF
-
+          with:
+            body_pat*: release-notes.md
       - name: Sign Provenance
         run: |
           cosign sign-blob \
