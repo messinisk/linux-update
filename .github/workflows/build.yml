@@ -14,9 +14,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Debug Git Tags
-          run: |
-            git tag
-            git describe --tags --abbrev=0 || true
+        run: |
+          git tag
+          git describe --tags --abbrev=0 || true
+          
       - name: Install bats
         run: |
           sudo apt update
