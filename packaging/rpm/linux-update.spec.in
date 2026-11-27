@@ -1,5 +1,5 @@
 Name:           linux-update
-Version:        0.6.4
+Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Universal Linux update tool
 

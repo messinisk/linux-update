@@ -10,6 +10,24 @@
 | 0.2.x | No |
 | 0.1.x | No |
 
+
+
+
+# Artifact Verification
+
+Artifacts are signed using:
+
+- Cosign
+- GitHub OIDC
+- Fulcio
+- Rekor
+
+Available verification files:
+
+- *.sig
+- provenance.json
+- provenance.json.sig
+
 ## Reporting a Vulnerability
 
 Please do not open a public issue.

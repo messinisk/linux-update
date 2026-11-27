@@ -1,4 +1,22 @@
 # Changelog
+## v0.6.4
+
+### Added
+
+- Cosign Integration
+- Keyless Signing
+- Provenance Generation
+- Provenance Signing
+
+### Changed
+
+- Dynamic version handling
+- Release automation improvements
+
+### Security
+
+- GitHub OIDC signing
+
 
 ## v0.5.0 Development - 2026-11-02
 

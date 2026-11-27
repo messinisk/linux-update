@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-VERSION=$(<version.txt)
+VERSION=$(git describe --tags --abbrev=0)
+VERSION=${VERSION#v}
 
 TARGET_DIR="${TARGET_DIR:-dist/v${VERSION}}"
 

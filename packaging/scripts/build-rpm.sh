@@ -23,9 +23,9 @@ rm -rf "$RPM_ROOT"
 mkdir -p "$RPM_ROOT"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
 sed \
-    "s/@VERSION@/$VERSION/g" \
-    packaging/rpm/linux-update.spec \
-    > build/rpm/SPECS/linux-update.spec
+  "s/@VERSION@/$VERSION/g" \
+  packaging/rpm/linux-update.spec.in \
+  > build/rpm/SPECS/linux-update.spec
 
 
 # Δημιουργία προσωρινού φακέλου για το tarball

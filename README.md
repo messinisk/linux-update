@@ -38,6 +38,24 @@ Official release formats:
 
 ---
 
+## Installation
+
+### Debian / Ubuntu
+
+### Fedora / Rocky / RHEL
+
+### AppImage
+
+## Security
+
+### Cosign Signatures
+
+### Provenance
+
+## Downloads
+
+Use GitHub Releases
+---
 ## Downloads
 
 Latest releases:
