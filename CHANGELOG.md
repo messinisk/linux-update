@@ -1,46 +1,97 @@
-# Changelog
+## Changelog
+
 ## v0.6.4
 
 ### Added
 
-- Cosign Integration
-- Keyless Signing
-- Provenance Generation
-- Provenance Signing
+- Dynamic version handling from Git tags
+- Automated release notes generation
+- Release workflow improvements
 
 ### Changed
 
-- Dynamic version handling
-- Release automation improvements
+- Reduced dependency on static version files
+- Improved build reproducibility
+
+---
+
+## v0.6.3
+
+### Added
+
+- Provenance generation
+- Provenance signing with Cosign
 
 ### Security
 
-- GitHub OIDC signing
+- Artifact provenance verification support
+
+---
+
+## v0.6.2
+
+### Added
+
+- GitHub Release Automation
+- Automatic asset publishing
+
+### Security
+
+- Cosign signatures published with releases
+
+---
+
+## v0.6.1
+
+### Changed
+
+- Version management improvements
+- Packaging pipeline cleanup
+- Repository test stabilization
+
+### CI/CD
+
+- Build workflow improvements
+- Integration test fixes
+
+---
+
+## v0.6.0
+
+### Added
+
+- Cosign Integration
+- Keyless Signing using GitHub OIDC
+- Supply Chain Security Foundation
+
+### Security
+
+- Release artifact signatures
+- Sigstore support
+
+---
+
+## v0.5.0
+
+### Added
+
+- Repository Build
+- Repository Index
+- Repository Verification
+- Repository Signing
+
+### Testing
+
+- Repository integration tests
+- Repository signing tests
+
+### Packaging
+
+- DEB support
+- RPM support
+- AppImage support
 
 
-## v0.5.0 Development - 2026-11-02
-
-✅ apt support
-✅ dnf support
-✅ zypper support
-
-✅ DEB packages
-✅ RPM packages
-✅ AppImage packages
-
-✅ SHA256SUMS
-✅ SHA256SUMS.asc
-✅ public.key
-
-✅ RPM signatures
-✅ DEB detached signatures
-✅ AppImage detached signatures
-
-✅ self-update prototype
-
-✅ src/ refactor
-✅ release/ refactor
-✅ packaging/ refactor
 
 
 ## [0.4.2] - 2026-11-01
