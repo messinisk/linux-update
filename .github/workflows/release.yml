@@ -1,0 +1,135 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            bats \
+            createrepo-c \
+            dpkg-dev
+
+      ######################################################################
+      # Build
+      ######################################################################
+
+      - name: Build DEB
+        run: |
+          bash packaging/scripts/build-deb.sh
+
+      - name: Build RPM
+        run: |
+          bash packaging/scripts/build-rpm.sh
+
+      - name: Build AppImage
+        run: |
+          bash packaging/scripts/appimage.sh
+
+      ######################################################################
+      # Tests
+      ######################################################################
+
+      - name: Run Tests
+        run: |
+          bats tests
+
+      ######################################################################
+      # Cosign
+      ######################################################################
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign Artifacts
+        run: |
+
+          find dist -name "*.deb" -exec \
+            cosign sign-blob \
+            --yes \
+            --output-signature {}.sig \
+            {} \;
+
+          find dist -name "*.rpm" -exec \
+            cosign sign-blob \
+            --yes \
+            --output-signature {}.sig \
+            {} \;
+
+          find dist -name "*.AppImage" -exec \
+            cosign sign-blob \
+            --yes \
+            --output-signature {}.sig \
+            {} \;
+
+      ######################################################################
+      # Provenance
+      ######################################################################
+
+      - name: Generate Provenance
+        run: |
+
+          VERSION=$(cat version.txt)
+
+          DEB=$(find dist -name "*.deb" | head -n1)
+          RPM=$(find dist -name "*.rpm" | head -n1)
+          APPIMAGE=$(find dist -name "*.AppImage" | head -n1)
+
+          cat > provenance.json <<EOF
+{
+  "project":"linux-update",
+  "version":"${VERSION}",
+  "tag":"${GITHUB_REF_NAME}",
+  "commit":"${GITHUB_SHA}",
+  "workflow":"${GITHUB_WORKFLOW}",
+  "repository":"${GITHUB_REPOSITORY}",
+  "run_id":"${GITHUB_RUN_ID}",
+  "generated":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+}
+EOF
+
+      - name: Sign Provenance
+        run: |
+          cosign sign-blob \
+            --yes \
+            provenance.json \
+            --output-signature provenance.json.sig
+
+      ######################################################################
+      # Release
+      ######################################################################
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/**/*.deb
+            dist/**/*.rpm
+            dist/**/*.AppImage
+
+            dist/**/SHA256SUMS
+            dist/**/SHA256SUMS.asc
+
+            dist/**/*.sig
+
+            provenance.json
+            provenance.json.sig
