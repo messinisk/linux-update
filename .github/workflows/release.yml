@@ -94,17 +94,17 @@ jobs:
           APPIMAGE=$(find dist -name "*.AppImage" | head -n1)
 
           cat > provenance.json <<EOF
-{
-  "project":"linux-update",
-  "version":"${VERSION}",
-  "tag":"${GITHUB_REF_NAME}",
-  "commit":"${GITHUB_SHA}",
-  "workflow":"${GITHUB_WORKFLOW}",
-  "repository":"${GITHUB_REPOSITORY}",
-  "run_id":"${GITHUB_RUN_ID}",
-  "generated":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-}
-EOF
+          {
+            "project":"linux-update",
+            "version":"${VERSION}",
+            "tag":"${GITHUB_REF_NAME}",
+            "commit":"${GITHUB_SHA}",
+            "workflow":"${GITHUB_WORKFLOW}",
+            "repository":"${GITHUB_REPOSITORY}",
+            "run_id":"${GITHUB_RUN_ID}",
+            "generated":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
 
       - name: Sign Provenance
         run: |
