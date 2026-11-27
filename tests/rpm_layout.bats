@@ -3,7 +3,7 @@
 @test "rpm spec uses install-tree helper" {
 
     run grep "install-tree.sh" \
-        packaging/rpm/linux-update.spec
+        packaging/rpm/linux-update.spec.in
 
     [ "$status" -eq 0 ]
 }
@@ -12,7 +12,7 @@
 
     run grep -E \
         "src/system|src/commands|src/ui" \
-        packaging/rpm/linux-update.spec
+        packaging/rpm/linux-update.spec.in
 
     [ "$status" -ne 0 ]
 }

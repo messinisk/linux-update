@@ -63,12 +63,11 @@ mkdir -p "$BUILD_DIR/usr/share/licenses/linux-update"
 #   Version: x.y.z
 #
 ###############################################################################
-mkdir -p build/debian
 
 sed \
   "s/@VERSION@/$VERSION/g" \
   packaging/debian/control.in \
-  > build/debian/control
+  > "$BUILD_DIR/DEBIAN/control"
 
 ###############################################################################
 # Install runtime tree
