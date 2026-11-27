@@ -2,8 +2,11 @@
 
 set -euo pipefail
 
-VERSION=$(git describe --tags --abbrev=0)
-VERSION=${VERSION#v}
+if VERSION=$(git describe --tags --abbrev=0 2>/dev/null); then
+    VERSION=${VERSION#v}
+else
+    VERSION=$(<version.txt)
+fi
 
 TARGET_DIR="${TARGET_DIR:-dist/v${VERSION}}"
 
